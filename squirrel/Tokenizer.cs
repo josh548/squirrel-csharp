@@ -150,7 +150,7 @@ namespace squirrel
                     return token;
                 }
 
-                throw new Exception($"invalid character found at position {_index + 1}: '{_current.Value}'");
+                throw new Exception($"invalid character found at index {_index}: '{_current.Value}'");
             }
 
             return new Token(EndOfFile, null);
