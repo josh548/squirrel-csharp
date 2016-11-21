@@ -8,12 +8,13 @@ namespace squirrel
     {
         private string _text;
         private int _index = 0;
-        private char? _current;
+        private char? _current, _next;
 
         public Tokenizer(string text)
         {
             _text = text;
             _current = _text[_index];
+            _next = Peek();
         }
 
         private char? Peek()
@@ -35,10 +36,12 @@ namespace squirrel
             if (_index < _text.Length)
             {
                 _current = _text[_index];
+                _next = Peek();
             }
             else
             {
                 _current = null;
+                _next = null;
             }
         }
 
@@ -112,9 +115,17 @@ namespace squirrel
                     continue;
                 }
 
-                if (char.IsDigit(_current.Value) || _current.Value == '+' || _current.Value == '-')
+                if (char.IsDigit(_current.Value))
                 {
                     return new Token(Integer, ReadInteger());
+                }
+
+                if (_current.Value == '+' || _current.Value == '-')
+                {
+                    if (_next.HasValue && char.IsDigit(_next.Value))
+                    {
+                        return new Token(Integer, ReadInteger());
+                    }
                 }
 
                 if (char.IsLetter(_current.Value))
