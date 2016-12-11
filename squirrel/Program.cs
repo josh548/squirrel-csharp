@@ -8,7 +8,7 @@ namespace squirrel
         {
             var tokenizer = new Tokenizer("(add +1 -2)");
 
-            foreach (var token in tokenizer.GetAllTokens())
+            foreach (var token in tokenizer.GetTokens())
             {
                 Console.WriteLine(token);
             }

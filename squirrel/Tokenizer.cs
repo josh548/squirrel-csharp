@@ -7,21 +7,26 @@ namespace squirrel
     public class Tokenizer
     {
         private readonly string _text;
-        private int _index;
+        private int _offset, _line, _column;
         private char? _current, _next;
 
         public Tokenizer(string text)
         {
             _text = text;
-            _current = _text[_index];
+            _current = _text[_offset];
             _next = Peek();
+        }
+
+        private SourceLocation GetCurrentLocation()
+        {
+            return new SourceLocation(_offset, _line, _column);
         }
 
         private char? Peek()
         {
-            if (_index + 1 < _text.Length)
+            if (_offset + 1 < _text.Length)
             {
-                return _text[_index + 1];
+                return _text[_offset + 1];
             }
             else
             {
@@ -31,11 +36,19 @@ namespace squirrel
 
         private void Advance()
         {
-            _index++;
-
-            if (_index < _text.Length)
+            // TODO: figure out how to deal with \r\n vs \n
+            if (_current == '\n')
             {
-                _current = _text[_index];
+                _line++;
+                _column = -1;
+            }
+
+            _offset++;
+            _column++;
+
+            if (_offset < _text.Length)
+            {
+                _current = _text[_offset];
                 _next = Peek();
             }
             else
@@ -95,6 +108,23 @@ namespace squirrel
             return lexeme;
         }
 
+        private string ReadCharacter()
+        {
+            var lexeme = _current?.ToString();
+            Advance();
+            return lexeme;
+        }
+
+        private Token Read(Category category, Func<string> readMethod)
+        {
+            var start = GetCurrentLocation();
+            var lexeme = readMethod.Invoke();
+            var end = GetCurrentLocation();
+            var span = new SourceSpan(start, end);
+
+            return new Token(category, span, lexeme);
+        }
+
         public Token GetNextToken()
         {
             while (_current.HasValue)
@@ -113,57 +143,49 @@ namespace squirrel
 
                 if (char.IsDigit(_current.Value))
                 {
-                    return new Token(Integer, ReadInteger());
+                    return Read(Integer, ReadInteger);
                 }
 
                 if (_current.Value == '+' || _current.Value == '-')
                 {
                     if (_next.HasValue && char.IsDigit(_next.Value))
                     {
-                        return new Token(Integer, ReadInteger());
+                        return Read(Integer, ReadInteger);
                     }
                 }
 
                 if (char.IsLetter(_current.Value))
                 {
-                    return new Token(Word, ReadWord());
+                    return Read(Word, ReadWord);
                 }
 
                 switch (_current.Value)
                 {
                     case '(':
                     {
-                        var token = new Token(LeftParenthesis, "(");
-                        Advance();
-                        return token;
+                        return Read(LeftParenthesis, ReadCharacter);
                     }
                     case ')':
                     {
-                        var token = new Token(RightParenthesis, ")");
-                        Advance();
-                        return token;
+                        return Read(RightParenthesis, ReadCharacter);
                     }
                     case '{':
                     {
-                        var token = new Token(LeftCurlyBrace, "{");
-                        Advance();
-                        return token;
+                        return Read(LeftCurlyBrace, ReadCharacter);
                     }
                     case '}':
                     {
-                        var token = new Token(RightCurlyBrace, "}");
-                        Advance();
-                        return token;
+                        return Read(RightCurlyBrace, ReadCharacter);
                     }
                     default:
-                        throw new Exception($"invalid character found at index {_index}: '{_current.Value}'");
+                        throw new Exception($"invalid character found at index {_offset}: '{_current.Value}'");
                 }
             }
 
-            return new Token(EndOfFile, null);
+            return new Token(EndOfFile, null, null);
         }
 
-        public List<Token> GetAllTokens()
+        public List<Token> GetTokens()
         {
             var tokens = new List<Token>();
 
