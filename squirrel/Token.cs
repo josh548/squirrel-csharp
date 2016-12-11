@@ -13,14 +13,9 @@
 
         public override string ToString()
         {
-            if (Lexeme == null)
-            {
-                return $"{nameof(Category)}: {Category}";
-            }
-            else
-            {
-                return $"{nameof(Category)}: {Category}, {nameof(Lexeme)}: {Lexeme}";
-            }
+            return Lexeme == null
+                ? $"{nameof(Category)}: {Category}"
+                : $"{nameof(Category)}: {Category}, {nameof(Lexeme)}: \"{Lexeme}\"";
         }
     }
 }

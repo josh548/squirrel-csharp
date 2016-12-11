@@ -6,8 +6,8 @@ namespace squirrel
 {
     public class Tokenizer
     {
-        private string _text;
-        private int _index = 0;
+        private readonly string _text;
+        private int _index;
         private char? _current, _next;
 
         public Tokenizer(string text)
@@ -55,16 +55,12 @@ namespace squirrel
 
         private void SkipComment()
         {
-            while (_current.HasValue)
+            do
             {
                 Advance();
+            } while (_current.HasValue && _current.Value != ']');
 
-                if (_current == ']')
-                {
-                    Advance();
-                    break;
-                }
-            }
+            Advance();
         }
 
         private string ReadInteger()
@@ -133,35 +129,35 @@ namespace squirrel
                     return new Token(Word, ReadWord());
                 }
 
-                if (_current.Value == '(')
+                switch (_current.Value)
                 {
-                    var token = new Token(LeftParenthesis, "(");
-                    Advance();
-                    return token;
+                    case '(':
+                    {
+                        var token = new Token(LeftParenthesis, "(");
+                        Advance();
+                        return token;
+                    }
+                    case ')':
+                    {
+                        var token = new Token(RightParenthesis, ")");
+                        Advance();
+                        return token;
+                    }
+                    case '{':
+                    {
+                        var token = new Token(LeftCurlyBrace, "{");
+                        Advance();
+                        return token;
+                    }
+                    case '}':
+                    {
+                        var token = new Token(RightCurlyBrace, "}");
+                        Advance();
+                        return token;
+                    }
+                    default:
+                        throw new Exception($"invalid character found at index {_index}: '{_current.Value}'");
                 }
-
-                if (_current.Value == ')')
-                {
-                    var token = new Token(RightParenthesis, ")");
-                    Advance();
-                    return token;
-                }
-
-                if (_current.Value == '{')
-                {
-                    var token = new Token(LeftCurlyBrace, "{");
-                    Advance();
-                    return token;
-                }
-
-                if (_current.Value == '}')
-                {
-                    var token = new Token(RightCurlyBrace, "}");
-                    Advance();
-                    return token;
-                }
-
-                throw new Exception($"invalid character found at index {_index}: '{_current.Value}'");
             }
 
             return new Token(EndOfFile, null);
