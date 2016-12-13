@@ -1,6 +1,6 @@
 ﻿namespace squirrel
 {
-    public enum Category
+    public enum TokenType
     {
         Integer,
         Word,

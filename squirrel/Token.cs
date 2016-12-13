@@ -1,25 +1,23 @@
-﻿using static squirrel.Category;
-
-namespace squirrel
+﻿namespace squirrel
 {
     public struct Token
     {
-        public Category Category;
-        public SourceSpan? SourceSpan;
+        public TokenType Type;
+        public SourceSpan? Span;
         public string Lexeme;
 
-        public Token(Category category, SourceSpan? sourceSpan, string lexeme)
+        public Token(TokenType type, SourceSpan? span, string lexeme)
         {
-            Category = category;
-            SourceSpan = sourceSpan;
+            Type = type;
+            Span = span;
             Lexeme = lexeme;
         }
 
         public override string ToString()
         {
-            return Category == EndOfFile
-                ? $"{nameof(Category)}: {Category}"
-                : $"{nameof(Category)}: {Category}, {nameof(SourceSpan)}: {SourceSpan}, {nameof(Lexeme)}: \"{Lexeme}\"";
+            return Type == TokenType.EndOfFile
+                ? $"{nameof(Type)}: {Type}"
+                : $"{nameof(Type)}: {Type}, {nameof(Span)}: {Span}, {nameof(Lexeme)}: \"{Lexeme}\"";
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using static squirrel.Category;
 
 namespace squirrel
 {
@@ -115,14 +114,14 @@ namespace squirrel
             return lexeme;
         }
 
-        private Token Read(Category category, Func<string> readMethod)
+        private Token Read(TokenType tokenType, Func<string> readMethod)
         {
             var start = GetCurrentLocation();
             var lexeme = readMethod.Invoke();
             var end = GetCurrentLocation();
             var span = new SourceSpan(start, end);
 
-            return new Token(category, span, lexeme);
+            return new Token(tokenType, span, lexeme);
         }
 
         public Token GetNextToken()
@@ -143,46 +142,46 @@ namespace squirrel
 
                 if (char.IsDigit(_current.Value))
                 {
-                    return Read(Integer, ReadInteger);
+                    return Read(TokenType.Integer, ReadInteger);
                 }
 
                 if (_current.Value == '+' || _current.Value == '-')
                 {
                     if (_next.HasValue && char.IsDigit(_next.Value))
                     {
-                        return Read(Integer, ReadInteger);
+                        return Read(TokenType.Integer, ReadInteger);
                     }
                 }
 
                 if (char.IsLetter(_current.Value))
                 {
-                    return Read(Word, ReadWord);
+                    return Read(TokenType.Word, ReadWord);
                 }
 
                 switch (_current.Value)
                 {
                     case '(':
                     {
-                        return Read(LeftParenthesis, ReadCharacter);
+                        return Read(TokenType.LeftParenthesis, ReadCharacter);
                     }
                     case ')':
                     {
-                        return Read(RightParenthesis, ReadCharacter);
+                        return Read(TokenType.RightParenthesis, ReadCharacter);
                     }
                     case '{':
                     {
-                        return Read(LeftCurlyBrace, ReadCharacter);
+                        return Read(TokenType.LeftCurlyBrace, ReadCharacter);
                     }
                     case '}':
                     {
-                        return Read(RightCurlyBrace, ReadCharacter);
+                        return Read(TokenType.RightCurlyBrace, ReadCharacter);
                     }
                     default:
                         throw new Exception($"invalid character found at index {_offset}: '{_current.Value}'");
                 }
             }
 
-            return new Token(EndOfFile, null, null);
+            return new Token(TokenType.EndOfFile, null, null);
         }
 
         public List<Token> GetTokens()
@@ -193,7 +192,7 @@ namespace squirrel
             {
                 var token = GetNextToken();
                 tokens.Add(token);
-                if (token.Category == EndOfFile)
+                if (token.Type == TokenType.EndOfFile)
                 {
                     return tokens;
                 }
