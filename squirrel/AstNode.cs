@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace squirrel
 {
@@ -13,6 +14,25 @@ namespace squirrel
             Type = type;
             Children = children;
             Value = value;
+        }
+
+        public override string ToString()
+        {
+            switch (Type)
+            {
+                case NodeType.Integer:
+                case NodeType.Symbol:
+                    return Value.ToString();
+                case NodeType.SymbolicExpression:
+                    return $"({string.Join(" ", Children)})";
+                case NodeType.QuotedExpression:
+                    return $"{{{string.Join(" ", Children)}}}";
+                case NodeType.Lambda:
+                case NodeType.Error:
+                    throw new NotImplementedException();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }
