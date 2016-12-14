@@ -1,4 +1,6 @@
-﻿namespace squirrel
+﻿using System;
+
+namespace squirrel
 {
     internal class Program
     {
@@ -7,8 +9,9 @@
             var tokenizer = new Tokenizer("(eval {add 1 2})");
             var parser = new Parser(tokenizer);
             var root = parser.Parse();
-            var traverser = new AstTraverser();
-            traverser.Visit(root);
+            var grapher = new DotGrapher(root);
+            var graph = grapher.GenerateGraph();
+            Console.WriteLine(graph);
         }
     }
 }
