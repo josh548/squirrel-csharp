@@ -3,7 +3,7 @@
     public enum NodeType
     {
         Integer,
-        Word,
+        Symbol,
         SymbolicExpression,
         QuotedExpression,
         Lambda,

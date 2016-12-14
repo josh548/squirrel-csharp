@@ -155,7 +155,7 @@ namespace squirrel
 
                 if (char.IsLetter(_current.Value))
                 {
-                    return Read(TokenType.Word, ReadWord);
+                    return Read(TokenType.Symbol, ReadWord);
                 }
 
                 switch (_current.Value)

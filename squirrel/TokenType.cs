@@ -3,7 +3,7 @@
     public enum TokenType
     {
         Integer,
-        Word,
+        Symbol,
         LeftParenthesis,
         RightParenthesis,
         LeftCurlyBrace,

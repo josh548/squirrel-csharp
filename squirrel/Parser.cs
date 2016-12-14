@@ -45,14 +45,14 @@ namespace squirrel
                     return QuotedExpression();
                 case TokenType.LeftParenthesis:
                     return SymbolicExpression();
-                case TokenType.Word:
-                    return Word();
+                case TokenType.Symbol:
+                    return Symbol();
                 case TokenType.Integer:
                     return Integer();
             }
 
             throw new Exception(
-                $"expected token of type {TokenType.LeftCurlyBrace}, {TokenType.LeftParenthesis}, {TokenType.Word}, {TokenType.Integer} but found {actual}: \"{_currentToken.Lexeme}\"");
+                $"expected token of type {TokenType.LeftCurlyBrace}, {TokenType.LeftParenthesis}, {TokenType.Symbol}, {TokenType.Integer} but found {actual}: \"{_currentToken.Lexeme}\"");
         }
 
         private AstNode QuotedExpression()
@@ -85,11 +85,11 @@ namespace squirrel
             return new AstNode(NodeType.SymbolicExpression, children, null);
         }
 
-        private AstNode Word()
+        private AstNode Symbol()
         {
             var token = _currentToken;
-            Consume(TokenType.Word);
-            return new AstNode(NodeType.Word, null, token.Lexeme);
+            Consume(TokenType.Symbol);
+            return new AstNode(NodeType.Symbol, null, token.Lexeme);
         }
 
         private AstNode Integer()

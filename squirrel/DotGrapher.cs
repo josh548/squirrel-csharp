@@ -38,7 +38,7 @@ namespace squirrel
         {
             _nodeNums.Add(node, ++_nodeCount);
 
-            _sb.Append($"\tnode{_nodeCount} [label=\"Word({node.Value})\"]\n");
+            _sb.Append($"\tnode{_nodeCount} [label=\"Symbol({node.Value})\"]\n");
         }
 
         // ReSharper disable once UnusedMember.Local
