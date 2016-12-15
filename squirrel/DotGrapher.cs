@@ -34,7 +34,7 @@ namespace squirrel
         }
 
         // ReSharper disable once UnusedMember.Local
-        private void VisitWord(AstNode node)
+        private void VisitSymbol(AstNode node)
         {
             _nodeNums.Add(node, ++_nodeCount);
 
