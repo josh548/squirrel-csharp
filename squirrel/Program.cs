@@ -6,12 +6,12 @@ namespace squirrel
     {
         public static void Main(string[] args)
         {
-            var tokenizer = new Tokenizer("(eval {add 1 2})");
+            var tokenizer = new Tokenizer("(add 1 2 3)");
             var parser = new Parser(tokenizer);
             var root = parser.Parse();
-            var grapher = new DotGrapher(root);
-            var graph = grapher.GenerateGraph();
-            Console.WriteLine(graph);
+            var evaluator = new Evaluator(root);
+            var result = evaluator.Evaluate();
+            Console.WriteLine(result);
         }
     }
 }

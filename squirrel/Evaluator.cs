@@ -1,12 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Linq;
 
 namespace squirrel
 {
     public class Evaluator : Visitor
     {
         private readonly AstNode _root;
+
+        private readonly Dictionary<string, BuiltinFunctionDelegate> _builtinFunctions =
+            new Dictionary<string, BuiltinFunctionDelegate>()
+            {
+                {"add", BuiltinAdd}
+            };
+
+        public delegate AstNode BuiltinFunctionDelegate(List<AstNode> args, Environment env);
 
         public Evaluator(AstNode root)
         {
@@ -65,9 +73,21 @@ namespace squirrel
 
         private AstNode EvaluateBuiltinFunction(AstNode head, List<AstNode> tail, Environment env)
         {
-            var methodName = $"Builtin{head.Value.ToString().Capitalize()}";
-            var method = GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
-            return (AstNode) method.Invoke(this, new object[] {tail, env});
+            var functionName = (string) head.Value;
+
+            if (!_builtinFunctions.ContainsKey(functionName))
+            {
+                throw new ArgumentException($"function is not defined: {functionName}");
+            }
+
+            var function = _builtinFunctions[functionName];
+            return function.Invoke(tail, env);
+        }
+
+        private static AstNode BuiltinAdd(List<AstNode> args, Environment env)
+        {
+            var sum = args.Sum(arg => (int) arg.Value);
+            return new AstNode(NodeType.Integer, null, sum);
         }
     }
 }
