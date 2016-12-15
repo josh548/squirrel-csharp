@@ -14,5 +14,10 @@ namespace squirrel
         {
             return list.Skip(1).ToList();
         }
+
+        public static string Capitalize(this string str)
+        {
+            return str.First().ToString().ToUpper() + str.Substring(1);
+        }
     }
 }

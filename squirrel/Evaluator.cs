@@ -55,12 +55,19 @@ namespace squirrel
 
             var tail = visitedChildren.Tail();
 
-            throw new NotImplementedException("evaluation of symbolic expressions is not implemented yet");
+            return EvaluateBuiltinFunction(head, tail, env);
         }
 
         protected AstNode VisitQuotedExpression(AstNode node, Environment env)
         {
             return node;
+        }
+
+        private AstNode EvaluateBuiltinFunction(AstNode head, List<AstNode> tail, Environment env)
+        {
+            var methodName = $"Builtin{head.Value.ToString().Capitalize()}";
+            var method = GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+            return (AstNode) method.Invoke(this, new object[] {tail, env});
         }
     }
 }
