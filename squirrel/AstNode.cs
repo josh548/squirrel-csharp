@@ -22,13 +22,13 @@ namespace squirrel
             {
                 case NodeType.Integer:
                 case NodeType.Symbol:
+                case NodeType.Error:
                     return Value.ToString();
                 case NodeType.SymbolicExpression:
                     return $"({string.Join(" ", Children)})";
                 case NodeType.QuotedExpression:
                     return $"{{{string.Join(" ", Children)}}}";
                 case NodeType.Lambda:
-                case NodeType.Error:
                     throw new NotImplementedException();
                 default:
                     throw new ArgumentOutOfRangeException();

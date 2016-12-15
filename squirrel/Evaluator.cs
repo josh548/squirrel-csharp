@@ -11,7 +11,10 @@ namespace squirrel
         private readonly Dictionary<string, BuiltinFunctionDelegate> _builtinFunctions =
             new Dictionary<string, BuiltinFunctionDelegate>()
             {
-                {"add", BuiltinAdd}
+                {"add", BuiltinAdd},
+                {"sub", BuiltinSub},
+                {"mul", BuiltinMul},
+                {"div", BuiltinDiv}
             };
 
         public delegate AstNode BuiltinFunctionDelegate(List<AstNode> args, Environment env);
@@ -71,6 +74,11 @@ namespace squirrel
             return node;
         }
 
+        protected AstNode VisitError(AstNode node, Environment env)
+        {
+            return node;
+        }
+
         private AstNode EvaluateBuiltinFunction(AstNode head, List<AstNode> tail, Environment env)
         {
             var functionName = (string) head.Value;
@@ -86,8 +94,76 @@ namespace squirrel
 
         private static AstNode BuiltinAdd(List<AstNode> args, Environment env)
         {
+            if (args.Count < 2)
+            {
+                return new AstNode(NodeType.Error, null, $"function takes at least 2 arguments ({args.Count} given)");
+            }
+
+            if (args.Exists(arg => arg.Type != NodeType.Integer))
+            {
+                return new AstNode(NodeType.Error, null, $"arguments must be of type {NodeType.Integer}");
+            }
+
             var sum = args.Sum(arg => (int) arg.Value);
             return new AstNode(NodeType.Integer, null, sum);
+        }
+
+        private static AstNode BuiltinSub(List<AstNode> args, Environment env)
+        {
+            if (args.Count != 2)
+            {
+                return new AstNode(NodeType.Error, null, $"function takes exactly 2 arguments ({args.Count} given)");
+            }
+
+            if (args.Exists(arg => arg.Type != NodeType.Integer))
+            {
+                return new AstNode(NodeType.Error, null, $"arguments must be of type {NodeType.Integer}");
+            }
+
+            var first = (int) args[0].Value;
+            var second = (int) args[1].Value;
+            var difference = first - second;
+            return new AstNode(NodeType.Integer, null, difference);
+        }
+
+        private static AstNode BuiltinMul(List<AstNode> args, Environment env)
+        {
+            if (args.Count < 2)
+            {
+                return new AstNode(NodeType.Error, null, $"function takes exactly 2 arguments ({args.Count} given)");
+            }
+
+            if (args.Exists(arg => arg.Type != NodeType.Integer))
+            {
+                return new AstNode(NodeType.Error, null, $"arguments must be of type {NodeType.Integer}");
+            }
+
+            var product = args.Aggregate(1, (current, arg) => current * (int) arg.Value);
+            return new AstNode(NodeType.Integer, null, product);
+        }
+
+        private static AstNode BuiltinDiv(List<AstNode> args, Environment env)
+        {
+            if (args.Count != 2)
+            {
+                return new AstNode(NodeType.Error, null, $"function takes exactly 2 arguments ({args.Count} given)");
+            }
+
+            if (args.Exists(arg => arg.Type != NodeType.Integer))
+            {
+                return new AstNode(NodeType.Error, null, $"arguments must be of type {NodeType.Integer}");
+            }
+
+            var first = (int) args[0].Value;
+            var second = (int) args[1].Value;
+
+            if (second == 0)
+            {
+                return new AstNode(NodeType.Error, null, "cannot divide by zero");
+            }
+
+            var quotient = first / second;
+            return new AstNode(NodeType.Integer, null, quotient);
         }
     }
 }
