@@ -11,9 +11,6 @@
             Column = column;
         }
 
-        public override string ToString()
-        {
-            return $"{Line}:{Column}";
-        }
+        public override string ToString() => $"{Line}:{Column}";
     }
 }

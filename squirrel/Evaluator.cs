@@ -24,20 +24,11 @@ namespace squirrel
             _root = root;
         }
 
-        public AstNode Evaluate()
-        {
-            return Visit(_root, new Environment());
-        }
+        public AstNode Evaluate() => Visit(_root, new Environment());
 
-        protected AstNode VisitInteger(AstNode node, Environment env)
-        {
-            return node;
-        }
+        protected AstNode VisitInteger(AstNode node, Environment env) => node;
 
-        protected AstNode VisitSymbol(AstNode node, Environment env)
-        {
-            return node;
-        }
+        protected AstNode VisitSymbol(AstNode node, Environment env) => node;
 
         protected AstNode VisitSymbolicExpression(AstNode node, Environment env)
         {
@@ -69,15 +60,9 @@ namespace squirrel
             return EvaluateBuiltinFunction(head, tail, env);
         }
 
-        protected AstNode VisitQuotedExpression(AstNode node, Environment env)
-        {
-            return node;
-        }
+        protected AstNode VisitQuotedExpression(AstNode node, Environment env) => node;
 
-        protected AstNode VisitError(AstNode node, Environment env)
-        {
-            return node;
-        }
+        protected AstNode VisitError(AstNode node, Environment env) => node;
 
         private AstNode EvaluateBuiltinFunction(AstNode head, List<AstNode> tail, Environment env)
         {

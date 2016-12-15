@@ -16,15 +16,9 @@ namespace squirrel
         {
         }
 
-        public void Add(string name, AstNode value)
-        {
-            _definitions.Add(name, value);
-        }
+        public void Add(string name, AstNode value) => _definitions.Add(name, value);
 
-        public AstNode? Get(string name)
-        {
-            return GetShallow(name) ?? _parent.Get(name);
-        }
+        public AstNode? Get(string name) => GetShallow(name) ?? _parent.Get(name);
 
         private AstNode? GetShallow(string name)
         {

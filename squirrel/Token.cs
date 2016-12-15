@@ -13,11 +13,8 @@
             Lexeme = lexeme;
         }
 
-        public override string ToString()
-        {
-            return Type == TokenType.EndOfFile
-                ? $"{nameof(Type)}: {Type}"
-                : $"{nameof(Type)}: {Type}, {nameof(Span)}: {Span}, {nameof(Lexeme)}: \"{Lexeme}\"";
-        }
+        public override string ToString() => Type == TokenType.EndOfFile
+            ? $"{nameof(Type)}: {Type}"
+            : $"{nameof(Type)}: {Type}, {nameof(Span)}: {Span}, {nameof(Lexeme)}: \"{Lexeme}\"";
     }
 }

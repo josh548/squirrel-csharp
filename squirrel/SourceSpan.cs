@@ -10,9 +10,6 @@
             End = end;
         }
 
-        public override string ToString()
-        {
-            return $"{Start}-{End}";
-        }
+        public override string ToString() => $"{Start}-{End}";
     }
 }
