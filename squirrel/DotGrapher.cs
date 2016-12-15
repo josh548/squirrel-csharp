@@ -8,7 +8,7 @@ namespace squirrel
         private readonly AstNode _root;
         private readonly StringBuilder _sb = new StringBuilder();
         private readonly Dictionary<AstNode, int> _nodeNums = new Dictionary<AstNode, int>();
-        private int _nodeCount;
+        private int _nodeIndex;
 
         public DotGrapher(AstNode root)
         {
@@ -28,25 +28,25 @@ namespace squirrel
         // ReSharper disable once UnusedMember.Local
         private void VisitInteger(AstNode node)
         {
-            _nodeNums.Add(node, ++_nodeCount);
+            _nodeNums.Add(node, _nodeIndex);
 
-            _sb.Append($"\tnode{_nodeCount} [label=\"Integer({node.Value})\"]\n");
+            _sb.Append($"\tnode{_nodeIndex++} [label=\"Integer({node.Value})\"]\n");
         }
 
         // ReSharper disable once UnusedMember.Local
         private void VisitSymbol(AstNode node)
         {
-            _nodeNums.Add(node, ++_nodeCount);
+            _nodeNums.Add(node, _nodeIndex);
 
-            _sb.Append($"\tnode{_nodeCount} [label=\"Symbol({node.Value})\"]\n");
+            _sb.Append($"\tnode{_nodeIndex++} [label=\"Symbol({node.Value})\"]\n");
         }
 
         // ReSharper disable once UnusedMember.Local
         private void VisitSymbolicExpression(AstNode node)
         {
-            _nodeNums.Add(node, ++_nodeCount);
+            _nodeNums.Add(node, _nodeIndex);
 
-            _sb.Append($"\tnode{_nodeCount} [label=\"SymbolicExpression\"]\n");
+            _sb.Append($"\tnode{_nodeIndex++} [label=\"SymbolicExpression\"]\n");
 
             foreach (var child in node.Children)
             {
@@ -62,9 +62,9 @@ namespace squirrel
         // ReSharper disable once UnusedMember.Local
         private void VisitQuotedExpression(AstNode node)
         {
-            _nodeNums.Add(node, ++_nodeCount);
+            _nodeNums.Add(node, _nodeIndex);
 
-            _sb.Append($"\tnode{_nodeCount} [label=\"QuotedExpression\"]\n");
+            _sb.Append($"\tnode{_nodeIndex++} [label=\"QuotedExpression\"]\n");
 
             foreach (var child in node.Children)
             {
