@@ -12,13 +12,14 @@ namespace squirrel
             new Dictionary<string, BuiltinFunctionDelegate>()
             {
                 {"block", BuiltinBlock},
+                {"def", BuiltinDef},
                 {"add", BuiltinAdd},
                 {"sub", BuiltinSub},
                 {"mul", BuiltinMul},
                 {"div", BuiltinDiv}
             };
 
-        public delegate AstNode BuiltinFunctionDelegate(List<AstNode> args, Environment env);
+        private delegate AstNode BuiltinFunctionDelegate(List<AstNode> args, Environment env);
 
         public Evaluator(AstNode root)
         {
@@ -29,7 +30,10 @@ namespace squirrel
 
         protected AstNode VisitInteger(AstNode node, Environment env) => node;
 
-        protected AstNode VisitSymbol(AstNode node, Environment env) => node;
+        protected AstNode VisitSymbol(AstNode node, Environment env)
+        {
+            return env.Get(node.Value as string) ?? node;
+        }
 
         protected AstNode VisitSymbolicExpression(AstNode node, Environment env)
         {
@@ -79,6 +83,39 @@ namespace squirrel
         }
 
         private static AstNode BuiltinBlock(List<AstNode> args, Environment env) => args[args.Count - 1];
+
+        private static AstNode BuiltinDef(List<AstNode> args, Environment env)
+        {
+            var names = args[0].Children;
+
+            if (names.Any(name => name.Type != NodeType.Symbol))
+            {
+                return new AstNode(NodeType.Error, null, $"names must be of type {NodeType.Symbol}");
+            }
+
+            var values = args.Skip(1).ToList();
+
+            if (names.Count != values.Count)
+            {
+                return new AstNode(NodeType.Error, null,
+                    $"number of values ({values.Count}) must equal number of names ({names.Count})");
+            }
+
+            for (var i = 0; i < names.Count; i++)
+            {
+                var name = names[i];
+                var value = values[i];
+
+                if (BuiltinFunctions.ContainsKey(name.Value as string))
+                {
+                    return new AstNode(NodeType.Error, null, $"cannot redefine builtin function: {name.Value}");
+                }
+
+                env.Put(name.Value as string, value);
+            }
+
+            return new AstNode(NodeType.QuotedExpression, new List<AstNode>(), env);
+        }
 
         private static AstNode BuiltinAdd(List<AstNode> args, Environment env)
         {
