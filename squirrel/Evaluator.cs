@@ -8,7 +8,7 @@ namespace squirrel
     {
         private readonly AstNode _root;
 
-        private readonly Dictionary<string, BuiltinFunctionDelegate> _builtinFunctions =
+        private static readonly Dictionary<string, BuiltinFunctionDelegate> BuiltinFunctions =
             new Dictionary<string, BuiltinFunctionDelegate>()
             {
                 {"block", BuiltinBlock},
@@ -69,12 +69,12 @@ namespace squirrel
         {
             var functionName = (string) head.Value;
 
-            if (!_builtinFunctions.ContainsKey(functionName))
+            if (!BuiltinFunctions.ContainsKey(functionName))
             {
                 throw new ArgumentException($"function is not defined: {functionName}");
             }
 
-            var function = _builtinFunctions[functionName];
+            var function = BuiltinFunctions[functionName];
             return function.Invoke(tail, env);
         }
 
