@@ -30,7 +30,7 @@ namespace squirrel
 
         protected AstNode VisitInteger(AstNode node, Environment env) => node;
 
-        protected AstNode VisitSymbol(AstNode node, Environment env) => env.Get(node.Value as string) ?? node;
+        protected AstNode VisitSymbol(AstNode node, Environment env) => env.Get((string) node.Value) ?? node;
 
         protected AstNode VisitSymbolicExpression(AstNode node, Environment env)
         {
@@ -83,14 +83,14 @@ namespace squirrel
 
         private static AstNode BuiltinDef(List<AstNode> args, Environment env)
         {
-            var names = args[0].Children;
+            var names = args.Head().Children;
 
             if (names.Any(name => name.Type != NodeType.Symbol))
             {
                 return new AstNode(NodeType.Error, null, $"names must be of type {NodeType.Symbol}");
             }
 
-            var values = args.Skip(1).ToList();
+            var values = args.Tail();
 
             if (names.Count != values.Count)
             {
@@ -103,12 +103,12 @@ namespace squirrel
                 var name = names[i];
                 var value = values[i];
 
-                if (BuiltinFunctions.ContainsKey(name.Value as string))
+                if (BuiltinFunctions.ContainsKey((string) name.Value))
                 {
                     return new AstNode(NodeType.Error, null, $"cannot redefine builtin function: {name.Value}");
                 }
 
-                env.Put(name.Value as string, value);
+                env.Put((string) name.Value, value);
             }
 
             return new AstNode(NodeType.QuotedExpression, new List<AstNode>(), env);
