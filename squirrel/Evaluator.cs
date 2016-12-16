@@ -11,6 +11,7 @@ namespace squirrel
         private readonly Dictionary<string, BuiltinFunctionDelegate> _builtinFunctions =
             new Dictionary<string, BuiltinFunctionDelegate>()
             {
+                {"block", BuiltinBlock},
                 {"add", BuiltinAdd},
                 {"sub", BuiltinSub},
                 {"mul", BuiltinMul},
@@ -75,6 +76,11 @@ namespace squirrel
 
             var function = _builtinFunctions[functionName];
             return function.Invoke(tail, env);
+        }
+
+        private static AstNode BuiltinBlock(List<AstNode> args, Environment env)
+        {
+            return args[args.Count - 1];
         }
 
         private static AstNode BuiltinAdd(List<AstNode> args, Environment env)
