@@ -30,10 +30,7 @@ namespace squirrel
 
         protected AstNode VisitInteger(AstNode node, Environment env) => node;
 
-        protected AstNode VisitSymbol(AstNode node, Environment env)
-        {
-            return env.Get(node.Value as string) ?? node;
-        }
+        protected AstNode VisitSymbol(AstNode node, Environment env) => env.Get(node.Value as string) ?? node;
 
         protected AstNode VisitSymbolicExpression(AstNode node, Environment env)
         {
