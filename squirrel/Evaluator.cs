@@ -78,10 +78,7 @@ namespace squirrel
             return function.Invoke(tail, env);
         }
 
-        private static AstNode BuiltinBlock(List<AstNode> args, Environment env)
-        {
-            return args[args.Count - 1];
-        }
+        private static AstNode BuiltinBlock(List<AstNode> args, Environment env) => args[args.Count - 1];
 
         private static AstNode BuiltinAdd(List<AstNode> args, Environment env)
         {
