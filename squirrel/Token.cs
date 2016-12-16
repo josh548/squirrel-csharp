@@ -2,9 +2,9 @@
 {
     public struct Token
     {
-        public TokenType Type;
-        public SourceSpan? Span;
-        public string Lexeme;
+        public readonly TokenType Type;
+        public readonly SourceSpan? Span;
+        public readonly string Lexeme;
 
         public Token(TokenType type, SourceSpan? span, string lexeme)
         {
