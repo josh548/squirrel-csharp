@@ -16,15 +16,22 @@ namespace squirrel
         {
         }
 
-        public void Add(string name, AstNode value) => _definitions.Add(name, value);
+        public void Put(string key, AstNode value) => _definitions.Add(key, value);
 
-        public AstNode? Get(string name) => GetShallow(name) ?? _parent.Get(name);
-
-        private AstNode? GetShallow(string name)
+        public AstNode? Get(string key)
         {
-            if (_definitions.ContainsKey(name))
+            if (_parent == null)
             {
-                return _definitions[name];
+                return GetShallow(key);
+            }
+            return GetShallow(key) ?? _parent.Get(key);
+        }
+
+        private AstNode? GetShallow(string key)
+        {
+            if (_definitions.ContainsKey(key))
+            {
+                return _definitions[key];
             }
             return null;
         }
