@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using squirrel.Node;
 
 namespace squirrel
 {
@@ -29,14 +30,14 @@ namespace squirrel
             }
         }
 
-        public AstNode Parse()
+        public INode Parse()
         {
             var result = Expression();
             Consume(TokenType.EndOfFile);
             return result;
         }
 
-        private AstNode Expression()
+        private INode Expression()
         {
             var actual = _currentToken.Type;
 
@@ -57,11 +58,11 @@ namespace squirrel
             }
         }
 
-        private AstNode QuotedExpression()
+        private INode QuotedExpression()
         {
             Consume(TokenType.LeftCurlyBrace);
 
-            var children = new List<AstNode>();
+            var children = new List<INode>();
             while (_currentToken.Type != TokenType.RightCurlyBrace)
             {
                 children.Add(Expression());
@@ -69,14 +70,14 @@ namespace squirrel
 
             Consume(TokenType.RightCurlyBrace);
 
-            return new AstNode(NodeType.QuotedExpression, children, null);
+            return new QuotedExpressionNode(children);
         }
 
-        private AstNode SymbolicExpression()
+        private INode SymbolicExpression()
         {
             Consume(TokenType.LeftParenthesis);
 
-            var children = new List<AstNode>();
+            var children = new List<INode>();
             while (_currentToken.Type != TokenType.RightParenthesis)
             {
                 children.Add(Expression());
@@ -84,21 +85,21 @@ namespace squirrel
 
             Consume(TokenType.RightParenthesis);
 
-            return new AstNode(NodeType.SymbolicExpression, children, null);
+            return new SymbolicExpressionNode(children);
         }
 
-        private AstNode Symbol()
+        private INode Symbol()
         {
             var token = _currentToken;
             Consume(TokenType.Symbol);
-            return new AstNode(NodeType.Symbol, null, token.Lexeme);
+            return new SymbolNode(token.Lexeme);
         }
 
-        private AstNode Integer()
+        private INode Integer()
         {
             var token = _currentToken;
             Consume(TokenType.Integer);
-            return new AstNode(NodeType.Integer, null, int.Parse(token.Lexeme));
+            return new IntegerNode(int.Parse(token.Lexeme));
         }
     }
 }

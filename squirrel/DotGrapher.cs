@@ -1,16 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using squirrel.Node;
 
 namespace squirrel
 {
     public class DotGrapher : Visitor
     {
-        private readonly AstNode _root;
+        private readonly INode _root;
         private readonly StringBuilder _sb = new StringBuilder();
-        private readonly Dictionary<AstNode, int> _nodeNums = new Dictionary<AstNode, int>();
+        private readonly Dictionary<INode, int> _nodeNums = new Dictionary<INode, int>();
         private int _nodeIndex;
 
-        public DotGrapher(AstNode root)
+        public DotGrapher(INode root)
         {
             _root = root;
         }
@@ -26,7 +27,7 @@ namespace squirrel
         }
 
         // ReSharper disable once UnusedMember.Local
-        private void VisitInteger(AstNode node)
+        private void VisitIntegerNode(IntegerNode node)
         {
             _nodeNums.Add(node, _nodeIndex);
 
@@ -34,7 +35,7 @@ namespace squirrel
         }
 
         // ReSharper disable once UnusedMember.Local
-        private void VisitSymbol(AstNode node)
+        private void VisitSymbolNode(SymbolNode node)
         {
             _nodeNums.Add(node, _nodeIndex);
 
@@ -42,7 +43,7 @@ namespace squirrel
         }
 
         // ReSharper disable once UnusedMember.Local
-        private void VisitSymbolicExpression(AstNode node)
+        private void VisitSymbolicExpressionNode(SymbolicExpressionNode node)
         {
             _nodeNums.Add(node, _nodeIndex);
 
@@ -60,7 +61,7 @@ namespace squirrel
         }
 
         // ReSharper disable once UnusedMember.Local
-        private void VisitQuotedExpression(AstNode node)
+        private void VisitQuotedExpressionNode(QuotedExpressionNode node)
         {
             _nodeNums.Add(node, _nodeIndex);
 

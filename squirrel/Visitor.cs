@@ -1,19 +1,22 @@
 ﻿using System.Reflection;
+using squirrel.Node;
 
 namespace squirrel
 {
     public abstract class Visitor
     {
-        protected void Visit(AstNode node)
+        protected void Visit(INode node)
         {
-            var method = GetType().GetMethod($"Visit{node.Type}", BindingFlags.Instance | BindingFlags.NonPublic);
+            var methodName = $"Visit{node.GetType().Name}";
+            var method = GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
             method.Invoke(this, new object[] {node});
         }
 
-        protected AstNode Visit(AstNode node, Environment env)
+        protected INode Visit(INode node, Environment env)
         {
-            var method = GetType().GetMethod($"Visit{node.Type}", BindingFlags.Instance | BindingFlags.NonPublic);
-            return (AstNode) method.Invoke(this, new object[] {node, env});
+            var methodName = $"Visit{node.GetType().Name}";
+            var method = GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+            return (INode) method.Invoke(this, new object[] {node, env});
         }
     }
 }

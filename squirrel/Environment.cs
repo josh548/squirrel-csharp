@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using squirrel.Node;
 
 namespace squirrel
 {
     public class Environment
     {
         private readonly Environment _parent;
-        private readonly Dictionary<string, AstNode> _definitions = new Dictionary<string, AstNode>();
+        private readonly Dictionary<string, INode> _definitions = new Dictionary<string, INode>();
 
         public Environment(Environment parent)
         {
@@ -16,9 +17,9 @@ namespace squirrel
         {
         }
 
-        public void Put(string key, AstNode value) => _definitions.Add(key, value);
+        public void Put(string key, INode value) => _definitions.Add(key, value);
 
-        public AstNode? Get(string key)
+        public INode Get(string key)
         {
             if (_parent == null)
             {
@@ -27,13 +28,9 @@ namespace squirrel
             return GetShallow(key) ?? _parent.Get(key);
         }
 
-        private AstNode? GetShallow(string key)
+        private INode GetShallow(string key)
         {
-            if (_definitions.ContainsKey(key))
-            {
-                return _definitions[key];
-            }
-            return null;
+            return _definitions.ContainsKey(key) ? _definitions[key] : null;
         }
     }
 }
