@@ -24,7 +24,8 @@ namespace squirrel
             }
             else
             {
-                throw new Exception($"expected token of type {expected} but found {actual}: \"{_currentToken.Lexeme}\"");
+                throw new Exception($"expected token of type {expected} " +
+                                    $"but found {actual}: \"{_currentToken.Lexeme}\"");
             }
         }
 
@@ -49,10 +50,11 @@ namespace squirrel
                     return Symbol();
                 case TokenType.Integer:
                     return Integer();
+                default:
+                    throw new Exception(
+                        $"expected token of type {TokenType.LeftCurlyBrace}, {TokenType.LeftParenthesis}, " +
+                        $"{TokenType.Symbol}, {TokenType.Integer} but found {actual}: \"{_currentToken.Lexeme}\"");
             }
-
-            throw new Exception(
-                $"expected token of type {TokenType.LeftCurlyBrace}, {TokenType.LeftParenthesis}, {TokenType.Symbol}, {TokenType.Integer} but found {actual}: \"{_currentToken.Lexeme}\"");
         }
 
         private AstNode QuotedExpression()

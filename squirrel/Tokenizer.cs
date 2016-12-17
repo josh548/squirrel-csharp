@@ -16,10 +16,7 @@ namespace squirrel
             _next = Peek();
         }
 
-        private SourceLocation GetCurrentLocation()
-        {
-            return new SourceLocation(_offset, _line, _column);
-        }
+        private SourceLocation GetCurrentLocation() => new SourceLocation(_offset, _line, _column);
 
         private char? Peek()
         {
@@ -27,10 +24,7 @@ namespace squirrel
             {
                 return _text[_offset + 1];
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
         private void Advance()
@@ -77,7 +71,7 @@ namespace squirrel
 
         private string ReadInteger()
         {
-            var lexeme = "";
+            var lexeme = string.Empty;
 
             if (_current == '+' || _current == '-')
             {
@@ -96,7 +90,7 @@ namespace squirrel
 
         private string ReadWord()
         {
-            var lexeme = "";
+            var lexeme = string.Empty;
 
             while (_current.HasValue && char.IsLetter(_current.Value))
             {
