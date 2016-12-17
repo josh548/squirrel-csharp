@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace squirrel
 {
@@ -96,6 +97,37 @@ namespace squirrel
             }
 
             var function = BuiltinFunctions[functionName];
+            BuiltinFunctionAttribute attr;
+            try
+            {
+                attr = function.GetMethodInfo().GetCustomAttribute<BuiltinFunctionAttribute>();
+            }
+            catch
+            {
+                return function.Invoke(tail, env);
+            }
+
+            var expectedCount = attr.ExpectedTypes.Length;
+            var actualCount = tail.Count;
+
+            if (actualCount != expectedCount)
+            {
+                var message = $"function takes exactly {expectedCount} arguments ({actualCount} given)";
+                return new AstNode(NodeType.Error, null, message);
+            }
+
+            for (var i = 0; i < expectedCount; i++)
+            {
+                var expectedType = attr.ExpectedTypes[i];
+                var actualType = tail[i].Type;
+
+                if (actualType != expectedType)
+                {
+                    var message = $"expected argument of type {expectedType} but got type {actualType}";
+                    return new AstNode(NodeType.Error, null, message);
+                }
+            }
+
             return function.Invoke(tail, env);
         }
 
@@ -150,18 +182,9 @@ namespace squirrel
             return new AstNode(NodeType.Integer, null, sum);
         }
 
+        [BuiltinFunction(ExpectedTypes = new[] {NodeType.Integer, NodeType.Integer})]
         private static AstNode BuiltinSub(List<AstNode> args, Environment env)
         {
-            if (args.Count != 2)
-            {
-                return new AstNode(NodeType.Error, null, $"function takes exactly 2 arguments ({args.Count} given)");
-            }
-
-            if (args.Exists(arg => arg.Type != NodeType.Integer))
-            {
-                return new AstNode(NodeType.Error, null, $"arguments must be of type {NodeType.Integer}");
-            }
-
             var first = (int) args[0].Value;
             var second = (int) args[1].Value;
             var difference = first - second;
@@ -184,18 +207,9 @@ namespace squirrel
             return new AstNode(NodeType.Integer, null, product);
         }
 
+        [BuiltinFunction(ExpectedTypes = new[] {NodeType.Integer, NodeType.Integer})]
         private static AstNode BuiltinDiv(List<AstNode> args, Environment env)
         {
-            if (args.Count != 2)
-            {
-                return new AstNode(NodeType.Error, null, $"function takes exactly 2 arguments ({args.Count} given)");
-            }
-
-            if (args.Exists(arg => arg.Type != NodeType.Integer))
-            {
-                return new AstNode(NodeType.Error, null, $"arguments must be of type {NodeType.Integer}");
-            }
-
             var first = (int) args[0].Value;
             var second = (int) args[1].Value;
 
