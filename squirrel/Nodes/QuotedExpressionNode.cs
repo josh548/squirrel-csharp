@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace squirrel.Node
+namespace squirrel.Nodes
 {
     public class QuotedExpressionNode : INode
     {

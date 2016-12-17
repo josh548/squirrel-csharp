@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using squirrel.Node;
+using squirrel.Nodes;
 
 namespace squirrel
 {

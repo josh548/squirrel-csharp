@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using squirrel.Node;
+using squirrel.Nodes;
 
 namespace squirrel
 {

@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using squirrel.Node;
+using squirrel.Nodes;
 
 namespace squirrel
 {
