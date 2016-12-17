@@ -1,4 +1,4 @@
-﻿namespace squirrel
+﻿namespace squirrel.Token
 {
     public struct SourceLocation
     {
