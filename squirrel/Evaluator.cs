@@ -18,7 +18,8 @@ namespace squirrel
                 {"add", BuiltinAdd},
                 {"sub", BuiltinSub},
                 {"mul", BuiltinMul},
-                {"div", BuiltinDiv}
+                {"div", BuiltinDiv},
+                {"eval", BuiltinEval},
             };
 
         private delegate INode BuiltinFunctionDelegate(List<INode> args, Environment env);
@@ -223,6 +224,14 @@ namespace squirrel
 
             var quotient = first / second;
             return new IntegerNode(quotient);
+        }
+
+        [BuiltinFunction(ExpectedTypes = new[] {typeof(QuotedExpressionNode)})]
+        private static INode BuiltinEval(List<INode> args, Environment env)
+        {
+            var quotedExpression = (QuotedExpressionNode) args[0];
+            var symbolicExpression = new SymbolicExpressionNode(quotedExpression.Children);
+            return VisitNode(symbolicExpression, env);
         }
     }
 }
