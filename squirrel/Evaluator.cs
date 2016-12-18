@@ -6,7 +6,7 @@ using squirrel.Nodes;
 
 namespace squirrel
 {
-    public class Evaluator : Visitor
+    public class Evaluator
     {
         private readonly INode _root;
 
@@ -28,11 +28,18 @@ namespace squirrel
             _root = root;
         }
 
-        public INode Evaluate() => Visit(_root, new Environment());
+        public INode Evaluate() => VisitNode(_root, new Environment());
 
-        protected INode VisitIntegerNode(IntegerNode node, Environment env) => node;
+        private static INode VisitNode(INode node, Environment env)
+        {
+            var methodName = $"Visit{node.GetType().Name}";
+            var method = typeof(Evaluator).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
+            return (INode) method.Invoke(null, new object[] {node, env});
+        }
 
-        protected INode VisitSymbolNode(SymbolNode node, Environment env)
+        private static INode VisitIntegerNode(IntegerNode node, Environment env) => node;
+
+        private static INode VisitSymbolNode(SymbolNode node, Environment env)
         {
             while (true)
             {
@@ -52,7 +59,7 @@ namespace squirrel
             }
         }
 
-        protected INode VisitSymbolicExpressionNode(SymbolicExpressionNode node, Environment env)
+        private static INode VisitSymbolicExpressionNode(SymbolicExpressionNode node, Environment env)
         {
             if (node.Children.Count < 2)
             {
@@ -62,7 +69,7 @@ namespace squirrel
             var visitedChildren = new List<INode>();
             foreach (var child in node.Children)
             {
-                var visitedChild = Visit(child, env);
+                var visitedChild = VisitNode(child, env);
                 if (visitedChild.GetType() == typeof(ErrorNode))
                 {
                     return visitedChild;
@@ -82,9 +89,11 @@ namespace squirrel
             return EvaluateBuiltinFunction((SymbolNode) head, tail, env);
         }
 
-        protected INode VisitQuotedExpressionNode(QuotedExpressionNode node, Environment env) => node;
+        private static INode VisitQuotedExpressionNode(QuotedExpressionNode node, Environment env) => node;
 
-        protected INode VisitErrorNode(ErrorNode node, Environment env) => node;
+        private static INode VisitLambdaFunctionNode(LambdaFunctionNode node, Environment env) => node;
+
+        private static INode VisitErrorNode(ErrorNode node, Environment env) => node;
 
         private static INode EvaluateBuiltinFunction(SymbolNode head, List<INode> tail, Environment env)
         {
