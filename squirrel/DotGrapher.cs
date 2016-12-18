@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using squirrel.Nodes;
@@ -9,8 +11,19 @@ namespace squirrel
     {
         private readonly INode _root;
         private readonly StringBuilder _sb = new StringBuilder();
-        private readonly Dictionary<INode, int> _nodeNums = new Dictionary<INode, int>();
-        private int _nodeIndex;
+        private readonly List<INode> _nodes = new List<INode>();
+
+        private int LookUp(INode node)
+        {
+            for (var i = 0; i < _nodes.Count; i++)
+            {
+                if (ReferenceEquals(node, _nodes[i]))
+                {
+                    return i + 1;
+                }
+            }
+            throw new KeyNotFoundException();
+        }
 
         public DotGrapher(INode root)
         {
@@ -29,6 +42,8 @@ namespace squirrel
 
         private void VisitNode(INode node)
         {
+            _nodes.Add(node);
+
             var methodName = $"Visit{node.GetType().Name}";
             var method = GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
             method.Invoke(this, new object[] {node});
@@ -36,23 +51,17 @@ namespace squirrel
 
         private void VisitIntegerNode(IntegerNode node)
         {
-            _nodeNums.Add(node, _nodeIndex);
-
-            _sb.Append($"\tnode{_nodeIndex++} [label=\"Integer({node.Value})\"]\n");
+            _sb.Append($"\tnode{_nodes.Count} [label=\"Integer({node.Value})\"]\n");
         }
 
         private void VisitSymbolNode(SymbolNode node)
         {
-            _nodeNums.Add(node, _nodeIndex);
-
-            _sb.Append($"\tnode{_nodeIndex++} [label=\"Symbol({node.Value})\"]\n");
+            _sb.Append($"\tnode{_nodes.Count} [label=\"Symbol({node.Value})\"]\n");
         }
 
         private void VisitSymbolicExpressionNode(SymbolicExpressionNode node)
         {
-            _nodeNums.Add(node, _nodeIndex);
-
-            _sb.Append($"\tnode{_nodeIndex++} [label=\"SymbolicExpression\"]\n");
+            _sb.Append($"\tnode{_nodes.Count} [label=\"SymbolicExpression\"]\n");
 
             foreach (var child in node.Children)
             {
@@ -61,15 +70,13 @@ namespace squirrel
 
             foreach (var child in node.Children)
             {
-                _sb.Append($"\tnode{_nodeNums[node]} -> node{_nodeNums[child]}\n");
+                _sb.Append($"\tnode{LookUp(node)} -> node{LookUp(child)}\n");
             }
         }
 
         private void VisitQuotedExpressionNode(QuotedExpressionNode node)
         {
-            _nodeNums.Add(node, _nodeIndex);
-
-            _sb.Append($"\tnode{_nodeIndex++} [label=\"QuotedExpression\"]\n");
+            _sb.Append($"\tnode{_nodes.Count} [label=\"QuotedExpression\"]\n");
 
             foreach (var child in node.Children)
             {
@@ -78,7 +85,7 @@ namespace squirrel
 
             foreach (var child in node.Children)
             {
-                _sb.Append($"\tnode{_nodeNums[node]} -> node{_nodeNums[child]}\n");
+                _sb.Append($"\tnode{LookUp(node)} -> node{LookUp(child)}\n");
             }
         }
     }
