@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using squirrel.Nodes;
@@ -49,16 +47,15 @@ namespace squirrel
             method.Invoke(this, new object[] {node});
         }
 
+        // ReSharper disable once UnusedMember.Local
         private void VisitIntegerNode(IntegerNode node)
-        {
-            _sb.Append($"\tnode{_nodes.Count} [label=\"Integer({node.Value})\"]\n");
-        }
+            => _sb.Append($"\tnode{_nodes.Count} [label=\"Integer({node.Value})\"]\n");
 
+        // ReSharper disable once UnusedMember.Local
         private void VisitSymbolNode(SymbolNode node)
-        {
-            _sb.Append($"\tnode{_nodes.Count} [label=\"Symbol({node.Value})\"]\n");
-        }
+            => _sb.Append($"\tnode{_nodes.Count} [label=\"Symbol({node.Value})\"]\n");
 
+        // ReSharper disable once UnusedMember.Local
         private void VisitSymbolicExpressionNode(SymbolicExpressionNode node)
         {
             _sb.Append($"\tnode{_nodes.Count} [label=\"SymbolicExpression\"]\n");
@@ -74,6 +71,7 @@ namespace squirrel
             }
         }
 
+        // ReSharper disable once UnusedMember.Local
         private void VisitQuotedExpressionNode(QuotedExpressionNode node)
         {
             _sb.Append($"\tnode{_nodes.Count} [label=\"QuotedExpression\"]\n");
