@@ -89,7 +89,7 @@ namespace squirrel
 
             if (head.GetType() == typeof(LambdaFunctionNode))
             {
-                throw new NotImplementedException("evaluation of lambda functions is not implemented yet");
+                return EvaluateLambdaFunction((LambdaFunctionNode) head, tail, new Environment(env));
             }
 
             throw new ArgumentException("first element of symbolic expression must be a symbol or lambda function");
@@ -138,6 +138,26 @@ namespace squirrel
             }
 
             return function.Invoke(tail, env);
+        }
+
+        private static INode EvaluateLambdaFunction(LambdaFunctionNode head, List<INode> tail, Environment env)
+        {
+            var expectedCount = head.Parameters.Children.Count;
+            var actualCount = tail.Count;
+
+            if (actualCount != expectedCount)
+            {
+                return new ErrorNode($"function takes exactly {expectedCount} arguments ({actualCount} given)");
+            }
+
+            for (var i = 0; i < expectedCount; i++)
+            {
+                var key = ((SymbolNode) head.Parameters.Children[i]).Value;
+                var value = tail[i];
+                env.Put(key, value);
+            }
+
+            return BuiltinEval(new List<INode>() {head.Body}, env);
         }
 
         private static INode BuiltinBlock(List<INode> args, Environment env) => args[args.Count - 1];
