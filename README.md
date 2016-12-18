@@ -7,7 +7,8 @@ Squirrel is an interpreted programming language with a minimal syntax inspired b
 - [Symbols] (#symbols)
 - [Symbolic expressions] (#symbolic-expressions)
 - [Quoted expressions] (#quoted-expressions)
-- [Defining Values] (#defining-values)
+- [Lambda functions] (#lambda-functions)
+- [Defining values] (#defining-values)
 
 ## Comments
 Comments are enclosed in square brackets and can span multiple lines.
@@ -57,6 +58,25 @@ A quoted expression (*q-expression* for short) is a sequence of expressions encl
 
 Because expressions nested inside q-expressions are not evaluated, q-expressions can be used as lists for storing data.
 
+## Lambda functions
+A lambda function can be created using the builtin `lambda` keyword. The `lambda` keyword takes two arguments, which are both q-expressions. The first argument is the parameter list and the second argument is the body of the function.
+
+```
+[ function that returns the square of a number ]
+(lambda {x} {mul x x})
+
+[ function that returns the average of two numbers ]
+(lambda {x y} {div (add x y) 2})
+```
+
+A lambda function can be evaluated by placing it inside an s-expression followed by the arguments.
+
+```
+((lambda {x} {mul x x}) 5) [ -> 25 ]
+
+((lambda {x y} {div (add x y) 2}) 10 20) [ -> 15 ]
+```
+
 ## Defining Values
 Constant values can be defined using the builtin `def` keyword. The first argument to the `def` keyword is a list (q-expression) of symbols which are the names to define. The remaining arguments are the values to associate with each name.
 
@@ -66,4 +86,8 @@ Constant values can be defined using the builtin `def` keyword. The first argume
 
 [ defining multiple values ]
 (def {y z} (mul x x) {a b c}) [ y = 25 | z = {a b c} ]
+
+[ defining a named function ]
+(def {square} (lambda {x} {mul x x}))
+(square 5) [ -> 25 ]
 ```
