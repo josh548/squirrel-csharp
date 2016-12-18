@@ -20,7 +20,8 @@ namespace squirrel
                 {"mul", BuiltinMul},
                 {"div", BuiltinDiv},
                 {"eval", BuiltinEval},
-                {"lambda", BuiltinLambda}
+                {"lambda", BuiltinLambda},
+                {"eq", BuiltinEq}
             };
 
         private delegate INode BuiltinFunctionDelegate(List<INode> args, Environment env);
@@ -271,6 +272,16 @@ namespace squirrel
             var body = (QuotedExpressionNode) args[1];
 
             return new LambdaFunctionNode(parameters, body);
+        }
+
+        private static INode BuiltinEq(List<INode> args, Environment env)
+        {
+            if (args.Count < 2)
+            {
+                return new ErrorNode($"function takes exactly 2 arguments ({args.Count} given)");
+            }
+
+            return new IntegerNode(args[0].Equals(args[1]) ? 1 : 0);
         }
     }
 }
