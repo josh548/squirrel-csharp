@@ -20,6 +20,7 @@ namespace squirrel
                 {"mul", BuiltinMul},
                 {"div", BuiltinDiv},
                 {"eval", BuiltinEval},
+                {"lambda", BuiltinLambda}
             };
 
         private delegate INode BuiltinFunctionDelegate(List<INode> args, Environment env);
@@ -79,15 +80,19 @@ namespace squirrel
             }
 
             var head = visitedChildren.Head();
-
-            if (head.GetType() != typeof(SymbolNode))
-            {
-                throw new ArgumentException("first item in symbolic expression must be a symbol");
-            }
-
             var tail = visitedChildren.Tail();
 
-            return EvaluateBuiltinFunction((SymbolNode) head, tail, env);
+            if (head.GetType() == typeof(SymbolNode))
+            {
+                return EvaluateBuiltinFunction((SymbolNode) head, tail, env);
+            }
+
+            if (head.GetType() == typeof(LambdaFunctionNode))
+            {
+                throw new NotImplementedException("evaluation of lambda functions is not implemented yet");
+            }
+
+            throw new ArgumentException("first element of symbolic expression must be a symbol or lambda function");
         }
 
         private static INode VisitQuotedExpressionNode(QuotedExpressionNode node, Environment env) => node;
@@ -232,6 +237,20 @@ namespace squirrel
             var quotedExpression = (QuotedExpressionNode) args[0];
             var symbolicExpression = new SymbolicExpressionNode(quotedExpression.Children);
             return VisitNode(symbolicExpression, env);
+        }
+
+        [BuiltinFunction(ExpectedTypes = new[] {typeof(QuotedExpressionNode), typeof(QuotedExpressionNode)})]
+        private static INode BuiltinLambda(List<INode> args, Environment env)
+        {
+            var parameters = (QuotedExpressionNode) args[0];
+            if (parameters.Children.Any(node => !(node is SymbolNode)))
+            {
+                return new ErrorNode("list of lambda function parameters must contain only symbols");
+            }
+
+            var body = (QuotedExpressionNode) args[1];
+
+            return new LambdaFunctionNode(parameters, body);
         }
     }
 }
