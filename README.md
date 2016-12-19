@@ -30,10 +30,13 @@ Integers are the only numeric type currently supported. Negative integers are pr
 ```
 
 ## Symbols
-A symbol is a case-sensitive word consisting only of alphabetic characters.
+A symbol is an object with a name. A symbol name consists of letters and optionally hyphens, although it cannot begin or end with a hyphen. Symbol names are case-sensitive. Symbols can serve as variables, function names, or as a data type on their own. Symbols that name builtin functions cannot be redefined.
 
 ```
-add sub mul div
+foo [ a symbol that might name a variable]
+add [ a symbol that names a builtin function ]
+Add [ not the same as the previous symbol ]
+example-with-hyphens
 ```
 
 ## Booleans
