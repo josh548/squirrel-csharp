@@ -93,10 +93,18 @@ namespace squirrel
         {
             var lexeme = string.Empty;
 
-            while (_current.HasValue && char.IsLetter(_current.Value))
+            while (_current.HasValue)
             {
-                lexeme += _current;
-                Advance();
+                if (char.IsLetter(_current.Value) ||
+                    (_current.Value == '-' && _next.HasValue && char.IsLetter(_next.Value)))
+                {
+                    lexeme += _current;
+                    Advance();
+                }
+                else
+                {
+                    break;
+                }
             }
 
             return lexeme;
