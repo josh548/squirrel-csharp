@@ -127,29 +127,45 @@ namespace squirrel
             }
 
             var function = BuiltinFunctions[functionName];
-            var attr = function.GetMethodInfo().GetCustomAttribute<BuiltinFunctionAttribute>();
 
-            if (attr == null)
+            var expectedTypeAttr = function.GetMethodInfo().GetCustomAttribute<ExpectedTypeAttribute>();
+
+            if (expectedTypeAttr != null)
             {
-                return function.Invoke(tail, env);
-            }
-
-            var expectedCount = attr.ExpectedTypes.Length;
-            var actualCount = tail.Count;
-
-            if (actualCount != expectedCount)
-            {
-                return new ErrorNode($"function takes exactly {expectedCount} arguments ({actualCount} given)");
-            }
-
-            for (var i = 0; i < expectedCount; i++)
-            {
-                var expectedType = attr.ExpectedTypes[i];
-                var actualType = tail[i].GetType();
-
-                if (actualType != expectedType)
+                var expectedType = expectedTypeAttr.ExpectedType;
+                foreach (var arg in tail)
                 {
-                    return new ErrorNode($"expected argument of type {expectedType} but got type {actualType}");
+                    var actualType = arg.GetType();
+                    if (actualType != expectedType)
+                    {
+                        return new ErrorNode($"expected argument of type {expectedType} but got type {actualType}");
+                    }
+                }
+            }
+
+            var expectedTypesAttr = function.GetMethodInfo().GetCustomAttribute<ExpectedTypesAttribute>();
+
+            if (expectedTypesAttr != null)
+            {
+                var expectedTypes = expectedTypesAttr.ExpectedTypes;
+
+                var expectedCount = expectedTypes.Length;
+                var actualCount = tail.Count;
+
+                if (actualCount != expectedCount)
+                {
+                    return new ErrorNode($"function takes exactly {expectedCount} arguments ({actualCount} given)");
+                }
+
+                for (var i = 0; i < expectedCount; i++)
+                {
+                    var expectedType = expectedTypes[i];
+                    var actualType = tail[i].GetType();
+
+                    if (actualType != expectedType)
+                    {
+                        return new ErrorNode($"expected argument of type {expectedType} but got type {actualType}");
+                    }
                 }
             }
 
@@ -211,6 +227,7 @@ namespace squirrel
             return new QuotedExpressionNode(new List<INode>());
         }
 
+        [ExpectedType(typeof(IntegerNode))]
         private static INode BuiltinAdd(List<INode> args, Environment env)
         {
             if (args.Count < 2)
@@ -227,7 +244,7 @@ namespace squirrel
             return new IntegerNode(sum);
         }
 
-        [BuiltinFunction(ExpectedTypes = new[] {typeof(IntegerNode), typeof(IntegerNode)})]
+        [ExpectedTypes(new[] {typeof(IntegerNode), typeof(IntegerNode)})]
         private static INode BuiltinSub(List<INode> args, Environment env)
         {
             var first = ((IntegerNode) args[0]).Value;
@@ -236,6 +253,7 @@ namespace squirrel
             return new IntegerNode(difference);
         }
 
+        [ExpectedType(typeof(IntegerNode))]
         private static INode BuiltinMul(List<INode> args, Environment env)
         {
             if (args.Count < 2)
@@ -252,7 +270,7 @@ namespace squirrel
             return new IntegerNode(product);
         }
 
-        [BuiltinFunction(ExpectedTypes = new[] {typeof(IntegerNode), typeof(IntegerNode)})]
+        [ExpectedTypes(new[] {typeof(IntegerNode), typeof(IntegerNode)})]
         private static INode BuiltinDiv(List<INode> args, Environment env)
         {
             var first = ((IntegerNode) args[0]).Value;
@@ -267,7 +285,7 @@ namespace squirrel
             return new IntegerNode(quotient);
         }
 
-        [BuiltinFunction(ExpectedTypes = new[] {typeof(QuotedExpressionNode)})]
+        [ExpectedTypes(new[] {typeof(QuotedExpressionNode)})]
         private static INode BuiltinEval(List<INode> args, Environment env)
         {
             var quotedExpression = (QuotedExpressionNode) args[0];
@@ -275,7 +293,7 @@ namespace squirrel
             return VisitNode(symbolicExpression, env);
         }
 
-        [BuiltinFunction(ExpectedTypes = new[] {typeof(QuotedExpressionNode), typeof(QuotedExpressionNode)})]
+        [ExpectedTypes(new[] {typeof(QuotedExpressionNode), typeof(QuotedExpressionNode)})]
         private static INode BuiltinLambda(List<INode> args, Environment env)
         {
             var parameters = (QuotedExpressionNode) args[0];
@@ -299,7 +317,7 @@ namespace squirrel
             return new IntegerNode(args[0].Equals(args[1]) ? 1 : 0);
         }
 
-        [BuiltinFunction(ExpectedTypes = new[] {typeof(QuotedExpressionNode), typeof(IntegerNode)})]
+        [ExpectedTypes(new[] {typeof(QuotedExpressionNode), typeof(IntegerNode)})]
         private static INode BuiltinNth(List<INode> args, Environment env)
         {
             var list = ((QuotedExpressionNode) args[0]).Children;
@@ -318,13 +336,13 @@ namespace squirrel
             return list[n - 1];
         }
 
-        [BuiltinFunction(ExpectedTypes = new[] {typeof(QuotedExpressionNode)})]
+        [ExpectedTypes(new[] {typeof(QuotedExpressionNode)})]
         private static INode BuiltinLen(List<INode> args, Environment env)
         {
             return new IntegerNode(((QuotedExpressionNode) args[0]).Children.Count);
         }
 
-        [BuiltinFunction(ExpectedTypes = new[] {typeof(QuotedExpressionNode)})]
+        [ExpectedTypes(new[] {typeof(QuotedExpressionNode)})]
         private static INode BuiltinHead(List<INode> args, Environment env)
         {
             var list = ((QuotedExpressionNode) args[0]).Children;
@@ -335,19 +353,21 @@ namespace squirrel
             return VisitNode(list.Head(), env);
         }
 
-        [BuiltinFunction(ExpectedTypes = new[] {typeof(QuotedExpressionNode)})]
+        [ExpectedTypes(new[] {typeof(QuotedExpressionNode)})]
         private static INode BuiltinTail(List<INode> args, Environment env)
         {
             var tail = ((QuotedExpressionNode) args[0]).Children.Tail();
             return new QuotedExpressionNode(tail);
         }
 
-        [BuiltinFunction(ExpectedTypes = new[] {typeof(QuotedExpressionNode), typeof(QuotedExpressionNode)})]
+        [ExpectedType(typeof(QuotedExpressionNode))]
         private static INode BuiltinJoin(List<INode> args, Environment env)
         {
-            var firstList = (QuotedExpressionNode) args[0];
-            var secondList = (QuotedExpressionNode) args[1];
-            var joined = firstList.Children.Concat(secondList.Children).ToList();
+            var joined = new List<INode>();
+            foreach (var arg in args)
+            {
+                joined.AddRange(((QuotedExpressionNode) arg).Children);
+            }
             return new QuotedExpressionNode(joined);
         }
     }
