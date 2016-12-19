@@ -24,7 +24,7 @@ Comments are enclosed in square brackets and can span multiple lines.
 ```
 
 ## Integers
-Integers are the only numeric type currently supported.
+Integers are the only numeric type currently supported. Negative integers are preceded with a minus sign. Positive integers can be preceded with an optional plus sign.
 ```
 1 +2 -3
 ```
