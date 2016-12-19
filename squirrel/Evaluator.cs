@@ -21,7 +21,12 @@ namespace squirrel
                 {"div", BuiltinDiv},
                 {"eval", BuiltinEval},
                 {"lambda", BuiltinLambda},
-                {"eq", BuiltinEq}
+                {"eq", BuiltinEq},
+                {"nth", BuiltinNth},
+                {"len", BuiltinLen},
+                {"head", BuiltinHead},
+                {"tail", BuiltinTail},
+                {"join", BuiltinJoin}
             };
 
         private delegate INode BuiltinFunctionDelegate(List<INode> args, Environment env);
@@ -292,6 +297,58 @@ namespace squirrel
             }
 
             return new IntegerNode(args[0].Equals(args[1]) ? 1 : 0);
+        }
+
+        [BuiltinFunction(ExpectedTypes = new[] {typeof(QuotedExpressionNode), typeof(IntegerNode)})]
+        private static INode BuiltinNth(List<INode> args, Environment env)
+        {
+            var list = ((QuotedExpressionNode) args[0]).Children;
+            var n = ((IntegerNode) args[1]).Value;
+
+            if (n < 1)
+            {
+                return new ErrorNode($"n ({n}) must be greater than 0");
+            }
+
+            if (n > list.Count)
+            {
+                return new ErrorNode($"n ({n}) must not be greater than the length of the list ({list.Count})");
+            }
+
+            return list[n - 1];
+        }
+
+        [BuiltinFunction(ExpectedTypes = new[] {typeof(QuotedExpressionNode)})]
+        private static INode BuiltinLen(List<INode> args, Environment env)
+        {
+            return new IntegerNode(((QuotedExpressionNode) args[0]).Children.Count);
+        }
+
+        [BuiltinFunction(ExpectedTypes = new[] {typeof(QuotedExpressionNode)})]
+        private static INode BuiltinHead(List<INode> args, Environment env)
+        {
+            var list = ((QuotedExpressionNode) args[0]).Children;
+            if (list.Count == 0)
+            {
+                return new QuotedExpressionNode(new List<INode>());
+            }
+            return VisitNode(list.Head(), env);
+        }
+
+        [BuiltinFunction(ExpectedTypes = new[] {typeof(QuotedExpressionNode)})]
+        private static INode BuiltinTail(List<INode> args, Environment env)
+        {
+            var tail = ((QuotedExpressionNode) args[0]).Children.Tail();
+            return new QuotedExpressionNode(tail);
+        }
+
+        [BuiltinFunction(ExpectedTypes = new[] {typeof(QuotedExpressionNode), typeof(QuotedExpressionNode)})]
+        private static INode BuiltinJoin(List<INode> args, Environment env)
+        {
+            var firstList = (QuotedExpressionNode) args[0];
+            var secondList = (QuotedExpressionNode) args[1];
+            var joined = firstList.Children.Concat(secondList.Children).ToList();
+            return new QuotedExpressionNode(joined);
         }
     }
 }
