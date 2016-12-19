@@ -24,7 +24,7 @@ Comments are enclosed in square brackets and can span multiple lines.
 ```
 
 ## Integers
-Integers are the only numeric type currently supported. Negative integers are preceded with a minus sign. Positive integers can be preceded with an optional plus sign.
+Integers are the only numeric type currently supported. Negative integers are preceded by a minus sign. Positive integers can be preceded by an optional plus sign.
 ```
 1 +2 -3
 ```
@@ -86,7 +86,7 @@ A lambda function can be evaluated by placing it inside an s-expression followed
 ((lambda {x y} {div (add x y) 2}) 10 20) [ -> 15 ]
 ```
 
-## Defining Values
+## Defining values
 Constant values can be defined using the builtin `def` keyword. The first argument to the `def` keyword is a list (q-expression) of symbols which are the names to define. The remaining arguments are the values to associate with each name.
 
 ```
