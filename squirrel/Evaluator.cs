@@ -270,7 +270,7 @@ namespace squirrel
 
             if (second == 0)
             {
-                return new ErrorNode("cannot divide by zeor");
+                return new ErrorNode("cannot divide by zero");
             }
 
             var quotient = first / second;
