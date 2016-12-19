@@ -5,6 +5,7 @@ Squirrel is an interpreted programming language with a minimal syntax inspired b
 - [Comments] (#comments)
 - [Integers] (#integers)
 - [Symbols] (#symbols)
+- [Booleans] (#booleans)
 - [Symbolic expressions] (#symbolic-expressions)
 - [Quoted expressions] (#quoted-expressions)
 - [Lambda functions] (#lambda-functions)
@@ -33,6 +34,14 @@ A symbol is a case-sensitive word consisting only of alphabetic characters.
 
 ```
 add sub mul div
+```
+
+## Booleans
+The symbols `true` and `false` act as boolean values. Boolean functions should return one of these symbols.
+
+```
+(eq (add 1 2) 3) [ -> true ])
+(eq 0 (len {a b c})) [ -> false ])
 ```
 
 ## Symbolic expressions
