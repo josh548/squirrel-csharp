@@ -20,6 +20,7 @@ namespace squirrel
                 {"mul", BuiltinMul},
                 {"div", BuiltinDiv},
                 {"eval", BuiltinEval},
+                {"lst", BuiltinLst},
                 {"lambda", BuiltinLambda},
                 {"eq", BuiltinEq},
                 {"nth", BuiltinNth},
@@ -279,6 +280,11 @@ namespace squirrel
             var quotedExpression = (QuotedExpressionNode) args[0];
             var symbolicExpression = new SymbolicExpressionNode(quotedExpression.Children);
             return VisitNode(symbolicExpression, env);
+        }
+
+        private static INode BuiltinLst(List<INode> args, Environment env)
+        {
+            return new QuotedExpressionNode(args);
         }
 
         [ExpectedTypes(new[] {typeof(QuotedExpressionNode), typeof(QuotedExpressionNode)})]
