@@ -32,6 +32,9 @@ namespace squirrel
 
         private delegate INode BuiltinFunctionDelegate(List<INode> args, Environment env);
 
+        private static readonly INode True = new SymbolNode("true");
+        private static readonly INode False = new SymbolNode("false");
+
         public Evaluator(INode root)
         {
             _root = root;
@@ -308,7 +311,7 @@ namespace squirrel
                 return new ErrorNode($"function takes exactly 2 arguments ({args.Count} given)");
             }
 
-            return new IntegerNode(args[0].Equals(args[1]) ? 1 : 0);
+            return args[0].Equals(args[1]) ? True : False;
         }
 
         [ExpectedTypes(new[] {typeof(QuotedExpressionNode), typeof(IntegerNode)})]
