@@ -280,9 +280,17 @@ namespace squirrel
         [ExpectedTypes(new[] {typeof(QuotedExpressionNode)})]
         private static INode BuiltinEval(List<INode> args, Environment env)
         {
-            var quotedExpression = (QuotedExpressionNode) args[0];
-            var symbolicExpression = new SymbolicExpressionNode(quotedExpression.Children);
-            return VisitNode(symbolicExpression, env);
+            var children = ((QuotedExpressionNode) args[0]).Children;
+
+            switch (children.Count)
+            {
+                case 0:
+                    return new ErrorNode("cannot evalute empty quoted expression");
+                case 1:
+                    return VisitNode(children[0], env);
+                default:
+                    return VisitNode(new SymbolicExpressionNode(children), env);
+            }
         }
 
         private static INode BuiltinLst(List<INode> args, Environment env)
