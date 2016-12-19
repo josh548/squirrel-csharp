@@ -234,12 +234,6 @@ namespace squirrel
             {
                 return new ErrorNode($"function takes at least 2 arguments ({args.Count} given)");
             }
-
-            if (args.Exists(arg => arg.GetType() != typeof(IntegerNode)))
-            {
-                return new ErrorNode($"arguments must be of type {nameof(IntegerNode)}");
-            }
-
             var sum = args.Sum(arg => ((IntegerNode) arg).Value);
             return new IntegerNode(sum);
         }
@@ -260,12 +254,6 @@ namespace squirrel
             {
                 return new ErrorNode($"function takes exactly 2 arguments ({args.Count} given)");
             }
-
-            if (args.Exists(arg => arg.GetType() != typeof(IntegerNode)))
-            {
-                return new ErrorNode($"arguments must be of type {nameof(IntegerNode)}");
-            }
-
             var product = args.Aggregate(1, (current, arg) => current * ((IntegerNode) arg).Value);
             return new IntegerNode(product);
         }
