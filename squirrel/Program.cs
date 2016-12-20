@@ -6,12 +6,17 @@ namespace squirrel
     {
         public static void Main(string[] args)
         {
-            var tokenizer = new Tokenizer("(add 1 2 3)");
+            if (args.Length == 0)
+            {
+                Console.WriteLine("no file specified");
+                return;
+            }
+
+            var input = System.IO.File.ReadAllText(args[0]);
+            var tokenizer = new Tokenizer(input);
             var parser = new Parser(tokenizer);
-            var root = parser.Parse();
-            var evaluator = new Evaluator(root);
-            var result = evaluator.Evaluate();
-            Console.WriteLine(result);
+            var evaluator = new Evaluator(parser.Parse());
+            Console.WriteLine(evaluator.Evaluate());
         }
     }
 }
