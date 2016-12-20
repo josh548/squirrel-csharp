@@ -23,6 +23,8 @@ namespace squirrel
                 {"lst", BuiltinLst},
                 {"lambda", BuiltinLambda},
                 {"eq", BuiltinEq},
+                {"lt", BuiltinLt},
+                {"gt", BuiltinGt},
                 {"nth", BuiltinNth},
                 {"len", BuiltinLen},
                 {"head", BuiltinHead},
@@ -321,6 +323,22 @@ namespace squirrel
             }
 
             return args[0].Equals(args[1]) ? True : False;
+        }
+
+        [ExpectedTypes(new[] {typeof(IntegerNode), typeof(IntegerNode)})]
+        private static INode BuiltinLt(List<INode> args, Environment env)
+        {
+            var first = ((IntegerNode) args[0]).Value;
+            var second = ((IntegerNode) args[1]).Value;
+            return first < second ? True : False;
+        }
+
+        [ExpectedTypes(new[] {typeof(IntegerNode), typeof(IntegerNode)})]
+        private static INode BuiltinGt(List<INode> args, Environment env)
+        {
+            var first = ((IntegerNode) args[0]).Value;
+            var second = ((IntegerNode) args[1]).Value;
+            return first > second ? True : False;
         }
 
         [ExpectedTypes(new[] {typeof(QuotedExpressionNode), typeof(IntegerNode)})]
