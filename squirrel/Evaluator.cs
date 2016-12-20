@@ -15,6 +15,7 @@ namespace squirrel
             {
                 {"block", BuiltinBlock},
                 {"def", BuiltinDef},
+                {"outer", BuiltinOuter},
                 {"add", BuiltinAdd},
                 {"sub", BuiltinSub},
                 {"mul", BuiltinMul},
@@ -229,6 +230,39 @@ namespace squirrel
                 }
 
                 env.Put(name, value);
+            }
+
+            return new QuotedExpressionNode(new List<INode>());
+        }
+
+        private static INode BuiltinOuter(List<INode> args, Environment env)
+        {
+            var names = ((QuotedExpressionNode) (args.Head())).Children;
+
+            if (names.Any(name => name.GetType() != typeof(SymbolNode)))
+            {
+                return new ErrorNode($"names must be of type {nameof(SymbolNode)}");
+            }
+
+            var values = args.Tail();
+
+            if (names.Count != values.Count)
+            {
+                return new ErrorNode(
+                    $"number of values ({values.Count}) must equal number of names ({names.Count})");
+            }
+
+            for (var i = 0; i < names.Count; i++)
+            {
+                var name = ((SymbolNode) names[i]).Value;
+                var value = values[i];
+
+                if (BuiltinFunctions.ContainsKey(name))
+                {
+                    return new ErrorNode($"cannot redefine builtin function: {name}");
+                }
+
+                env.PutOuter(name, value);
             }
 
             return new QuotedExpressionNode(new List<INode>());
