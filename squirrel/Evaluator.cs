@@ -20,6 +20,7 @@ namespace squirrel
                 {"sub", BuiltinSub},
                 {"mul", BuiltinMul},
                 {"div", BuiltinDiv},
+                {"mod", BuiltinMod},
                 {"eval", BuiltinEval},
                 {"lst", BuiltinLst},
                 {"lambda", BuiltinLambda},
@@ -312,6 +313,21 @@ namespace squirrel
 
             var quotient = first / second;
             return new IntegerNode(quotient);
+        }
+
+        [ExpectedTypes(new[] {typeof(IntegerNode), typeof(IntegerNode)})]
+        private static INode BuiltinMod(List<INode> args, Environment env)
+        {
+            var first = ((IntegerNode) args[0]).Value;
+            var second = ((IntegerNode) args[1]).Value;
+
+            if (second == 0)
+            {
+                return new ErrorNode("cannot divide by zero");
+            }
+
+            var remainder = first % second;
+            return new IntegerNode(remainder);
         }
 
         [ExpectedTypes(new[] {typeof(QuotedExpressionNode)})]
