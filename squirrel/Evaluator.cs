@@ -11,7 +11,7 @@ namespace Squirrel
         private readonly INode _root;
 
         private static readonly Dictionary<string, BuiltinFunctionDelegate> BuiltinFunctions =
-            new Dictionary<string, BuiltinFunctionDelegate>()
+            new Dictionary<string, BuiltinFunctionDelegate>
             {
                 {"block", BuiltinBlock},
                 {"def", BuiltinDef},
@@ -22,7 +22,7 @@ namespace Squirrel
                 {"div", BuiltinDiv},
                 {"mod", BuiltinMod},
                 {"eval", BuiltinEval},
-                {"lst", BuiltinLst},
+                {"quote", BuiltinQuote},
                 {"lambda", BuiltinLambda},
                 {"eq", BuiltinEq},
                 {"lt", BuiltinLt},
@@ -198,7 +198,7 @@ namespace Squirrel
                 env.Put(key, value);
             }
 
-            return BuiltinEval(new List<INode>() {head.Body}, env);
+            return BuiltinEval(new List<INode> {head.Body}, env);
         }
 
         private static INode BuiltinBlock(List<INode> args, Environment env) => args[args.Count - 1];
@@ -346,7 +346,7 @@ namespace Squirrel
             }
         }
 
-        private static INode BuiltinLst(List<INode> args, Environment env)
+        private static INode BuiltinQuote(List<INode> args, Environment env)
         {
             return new QuotedExpressionNode(args);
         }
