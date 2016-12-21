@@ -1,4 +1,4 @@
-﻿namespace squirrel.Nodes
+﻿namespace Squirrel.Nodes
 {
     public interface INode
     {

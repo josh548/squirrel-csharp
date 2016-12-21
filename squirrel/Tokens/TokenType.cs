@@ -1,4 +1,4 @@
-﻿namespace squirrel.Tokens
+﻿namespace Squirrel.Tokens
 {
     public enum TokenType
     {

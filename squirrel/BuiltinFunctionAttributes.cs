@@ -1,7 +1,7 @@
 ﻿using System;
-using squirrel.Nodes;
+using Squirrel.Nodes;
 
-namespace squirrel
+namespace Squirrel
 {
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public class ExpectedTypeAttribute : Attribute

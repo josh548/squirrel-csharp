@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using squirrel.Tokens;
+using Squirrel.Tokens;
 
-namespace squirrel
+namespace Squirrel
 {
     public class Tokenizer
     {

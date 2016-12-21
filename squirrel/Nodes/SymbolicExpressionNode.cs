@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace squirrel.Nodes
+namespace Squirrel.Nodes
 {
     public class SymbolicExpressionNode : INode
     {

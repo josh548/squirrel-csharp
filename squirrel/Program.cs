@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace squirrel
+namespace Squirrel
 {
     internal class Program
     {

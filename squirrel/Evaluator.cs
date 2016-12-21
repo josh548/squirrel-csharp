@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using squirrel.Nodes;
+using Squirrel.Nodes;
 
-namespace squirrel
+namespace Squirrel
 {
     public class Evaluator
     {

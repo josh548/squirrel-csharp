@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace squirrel
+namespace Squirrel
 {
     public static class ExtensionMethods
     {

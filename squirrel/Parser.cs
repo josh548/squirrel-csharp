@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using squirrel.Nodes;
-using squirrel.Tokens;
+using Squirrel.Nodes;
+using Squirrel.Tokens;
 
-namespace squirrel
+namespace Squirrel
 {
     public class Parser
     {

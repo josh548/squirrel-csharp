@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-using squirrel.Nodes;
+using Squirrel.Nodes;
 
-namespace squirrel
+namespace Squirrel
 {
     public class DotGrapher
     {
