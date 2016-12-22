@@ -13,6 +13,7 @@ namespace Squirrel
         private static readonly Dictionary<string, BuiltinFunctionDelegate> BuiltinFunctions =
             new Dictionary<string, BuiltinFunctionDelegate>
             {
+                {"display", BuiltinDisplay},
                 {"block", BuiltinBlock},
                 {"def", BuiltinDef},
                 {"outer", BuiltinOuter},
@@ -200,6 +201,12 @@ namespace Squirrel
             }
 
             return BuiltinEval(new List<INode> {head.Body}, env);
+        }
+
+        private static INode BuiltinDisplay(List<INode> args, Environment env)
+        {
+            Console.WriteLine(args[0]);
+            return Nil;
         }
 
         private static INode BuiltinBlock(List<INode> args, Environment env) => args[args.Count - 1];
