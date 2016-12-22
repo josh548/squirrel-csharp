@@ -39,6 +39,7 @@ namespace Squirrel
 
         private static readonly INode True = new SymbolNode("true");
         private static readonly INode False = new SymbolNode("false");
+        private static readonly INode Nil = new QuotedExpressionNode(new List<INode>());
 
         public Evaluator(INode root)
         {
@@ -233,7 +234,7 @@ namespace Squirrel
                 env.Put(name, value);
             }
 
-            return new QuotedExpressionNode(new List<INode>());
+            return Nil;
         }
 
         private static INode BuiltinOuter(List<INode> args, Environment env)
@@ -266,7 +267,7 @@ namespace Squirrel
                 env.PutOuter(name, value);
             }
 
-            return new QuotedExpressionNode(new List<INode>());
+            return Nil;
         }
 
         [ExpectedType(typeof(IntegerNode))]
@@ -422,7 +423,7 @@ namespace Squirrel
             var list = ((QuotedExpressionNode) args[0]).Children;
             if (list.Count == 0)
             {
-                return new QuotedExpressionNode(new List<INode>());
+                return Nil;
             }
             return VisitNode(list.Head(), env);
         }
