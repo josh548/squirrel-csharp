@@ -16,7 +16,7 @@ namespace Squirrel
             _text = text;
             if (string.IsNullOrEmpty(_text))
             {
-                throw new TokenizerException("no input provided");
+                throw new TokenizerException("empty input");
             }
             _current = _text[_offset];
             _next = Peek();

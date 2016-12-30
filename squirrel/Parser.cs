@@ -30,7 +30,7 @@ namespace Squirrel
         {
             if (!_currentToken.HasValue)
             {
-                throw new ParserException($"expected {expected} token but reached end of file");
+                throw new ParserException($"expected {expected} but reached end of file");
             }
 
             var actual = _currentToken.Value.Type;
@@ -41,8 +41,7 @@ namespace Squirrel
             }
             else
             {
-                throw new ParserException($"expected token of type {expected} " +
-                                          $"but found {actual}: \"{_currentToken.Value.Lexeme}\"");
+                throw new ParserException($"expected {expected} but found {actual}: \"{_currentToken.Value.Lexeme}\"");
             }
         }
 
@@ -60,7 +59,7 @@ namespace Squirrel
         {
             if (!_currentToken.HasValue)
             {
-                throw new ParserException("no expression to parse");
+                throw new ParserException("expected expression before end of file");
             }
 
             var actual = _currentToken.Value.Type;
@@ -77,8 +76,8 @@ namespace Squirrel
                     return Integer();
                 default:
                     throw new ParserException(
-                        $"expected token of type {TokenType.LeftCurlyBrace}, {TokenType.LeftParenthesis}, " +
-                        $"{TokenType.Symbol}, {TokenType.Integer} but found {actual}: \"{_currentToken.Value.Lexeme}\"");
+                        $"expected {TokenType.LeftCurlyBrace}, {TokenType.LeftParenthesis}, {TokenType.Symbol}, or " +
+                        $"{TokenType.Integer} but found {actual}: \"{_currentToken.Value.Lexeme}\"");
             }
         }
 
