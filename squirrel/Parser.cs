@@ -115,6 +115,7 @@ namespace Squirrel
         {
             var token = _currentToken;
             Consume(TokenType.Symbol);
+            // ReSharper disable once PossibleInvalidOperationException
             return new SymbolNode(token.Value.Lexeme);
         }
 
@@ -122,6 +123,7 @@ namespace Squirrel
         {
             var token = _currentToken;
             Consume(TokenType.Integer);
+            // ReSharper disable once PossibleInvalidOperationException
             return new IntegerNode(int.Parse(token.Value.Lexeme));
         }
     }
