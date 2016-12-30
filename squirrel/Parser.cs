@@ -8,39 +8,62 @@ namespace Squirrel
     public class Parser
     {
         private readonly List<Token> _tokens;
-        private Token _currentToken;
+        private int _offset;
+        private Token? _currentToken;
 
         public Parser(List<Token> tokens)
         {
             _tokens = tokens;
-            //_currentToken = _tokenizer.GetNextToken();
+            _currentToken = GetNextToken();
+        }
+
+        private Token? GetNextToken()
+        {
+            if (_offset < _tokens.Count)
+            {
+                return _tokens[_offset++];
+            }
+            return null;
         }
 
         private void Consume(TokenType expected)
         {
-            var actual = _currentToken.Type;
+            if (!_currentToken.HasValue)
+            {
+                throw new ParserException($"expected {expected} token but reached end of file");
+            }
+
+            var actual = _currentToken.Value.Type;
 
             if (actual == expected)
             {
-                //_currentToken = _tokenizer.GetNextToken();
+                _currentToken = GetNextToken();
             }
             else
             {
                 throw new ParserException($"expected token of type {expected} " +
-                                          $"but found {actual}: \"{_currentToken.Lexeme}\"");
+                                          $"but found {actual}: \"{_currentToken.Value.Lexeme}\"");
             }
         }
 
         public INode Parse()
         {
             var result = Expression();
-            // TODO: verify end of file
+            if (_currentToken.HasValue)
+            {
+                throw new ParserException("expected end of file after expression");
+            }
             return result;
         }
 
         private INode Expression()
         {
-            var actual = _currentToken.Type;
+            if (!_currentToken.HasValue)
+            {
+                throw new ParserException("no expression to parse");
+            }
+
+            var actual = _currentToken.Value.Type;
 
             switch (actual)
             {
@@ -55,7 +78,7 @@ namespace Squirrel
                 default:
                     throw new ParserException(
                         $"expected token of type {TokenType.LeftCurlyBrace}, {TokenType.LeftParenthesis}, " +
-                        $"{TokenType.Symbol}, {TokenType.Integer} but found {actual}: \"{_currentToken.Lexeme}\"");
+                        $"{TokenType.Symbol}, {TokenType.Integer} but found {actual}: \"{_currentToken.Value.Lexeme}\"");
             }
         }
 
@@ -64,7 +87,7 @@ namespace Squirrel
             Consume(TokenType.LeftCurlyBrace);
 
             var children = new List<INode>();
-            while (_currentToken.Type != TokenType.RightCurlyBrace)
+            while (_currentToken.HasValue && (_currentToken.Value.Type != TokenType.RightCurlyBrace))
             {
                 children.Add(Expression());
             }
@@ -79,7 +102,7 @@ namespace Squirrel
             Consume(TokenType.LeftParenthesis);
 
             var children = new List<INode>();
-            while (_currentToken.Type != TokenType.RightParenthesis)
+            while (_currentToken.HasValue && (_currentToken.Value.Type != TokenType.RightParenthesis))
             {
                 children.Add(Expression());
             }
@@ -93,14 +116,14 @@ namespace Squirrel
         {
             var token = _currentToken;
             Consume(TokenType.Symbol);
-            return new SymbolNode(token.Lexeme);
+            return new SymbolNode(token.Value.Lexeme);
         }
 
         private INode Integer()
         {
             var token = _currentToken;
             Consume(TokenType.Integer);
-            return new IntegerNode(int.Parse(token.Lexeme));
+            return new IntegerNode(int.Parse(token.Value.Lexeme));
         }
     }
 }
