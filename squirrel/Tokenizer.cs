@@ -128,7 +128,7 @@ namespace Squirrel
             return new Token(tokenType, span, lexeme);
         }
 
-        public Token GetNextToken()
+        private Token? GetNextToken()
         {
             while (_current.HasValue)
             {
@@ -185,18 +185,22 @@ namespace Squirrel
                 }
             }
 
-            return new Token(TokenType.EndOfFile, null, null);
+            return null;
         }
 
-        public List<Token> GetTokens()
+        public List<Token> Tokenize()
         {
             var tokens = new List<Token>();
 
             while (true)
             {
                 var token = GetNextToken();
-                tokens.Add(token);
-                if (token.Type == TokenType.EndOfFile)
+
+                if (token.HasValue)
+                {
+                    tokens.Add(token.Value);
+                }
+                else
                 {
                     return tokens;
                 }

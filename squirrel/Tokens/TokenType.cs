@@ -7,7 +7,6 @@
         LeftParenthesis,
         RightParenthesis,
         LeftCurlyBrace,
-        RightCurlyBrace,
-        EndOfFile
+        RightCurlyBrace
     }
 }
