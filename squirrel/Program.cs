@@ -14,7 +14,8 @@ namespace Squirrel
 
             var input = System.IO.File.ReadAllText(args[0]);
             var tokenizer = new Tokenizer(input);
-            var parser = new Parser(tokenizer);
+            var tokens = tokenizer.Tokenize();
+            var parser = new Parser(tokens);
             var evaluator = new Evaluator(parser.Parse());
             Console.WriteLine(evaluator.Evaluate());
         }

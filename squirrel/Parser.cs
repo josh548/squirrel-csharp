@@ -7,13 +7,13 @@ namespace Squirrel
 {
     public class Parser
     {
-        private readonly Tokenizer _tokenizer;
+        private readonly List<Token> _tokens;
         private Token _currentToken;
 
-        public Parser(Tokenizer tokenizer)
+        public Parser(List<Token> tokens)
         {
-            _tokenizer = tokenizer;
-            _currentToken = _tokenizer.GetNextToken();
+            _tokens = tokens;
+            //_currentToken = _tokenizer.GetNextToken();
         }
 
         private void Consume(TokenType expected)
@@ -22,7 +22,7 @@ namespace Squirrel
 
             if (actual == expected)
             {
-                _currentToken = _tokenizer.GetNextToken();
+                //_currentToken = _tokenizer.GetNextToken();
             }
             else
             {
@@ -34,7 +34,7 @@ namespace Squirrel
         public INode Parse()
         {
             var result = Expression();
-            Consume(TokenType.EndOfFile);
+            // TODO: verify end of file
             return result;
         }
 
