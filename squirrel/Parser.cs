@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Squirrel.Exceptions;
 using Squirrel.Nodes;
 using Squirrel.Tokens;
 
@@ -26,8 +26,8 @@ namespace Squirrel
             }
             else
             {
-                throw new Exception($"expected token of type {expected} " +
-                                    $"but found {actual}: \"{_currentToken.Lexeme}\"");
+                throw new ParserException($"expected token of type {expected} " +
+                                          $"but found {actual}: \"{_currentToken.Lexeme}\"");
             }
         }
 
@@ -53,7 +53,7 @@ namespace Squirrel
                 case TokenType.Integer:
                     return Integer();
                 default:
-                    throw new Exception(
+                    throw new ParserException(
                         $"expected token of type {TokenType.LeftCurlyBrace}, {TokenType.LeftParenthesis}, " +
                         $"{TokenType.Symbol}, {TokenType.Integer} but found {actual}: \"{_currentToken.Lexeme}\"");
             }

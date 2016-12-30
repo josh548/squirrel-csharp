@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Squirrel.Exceptions;
 using Squirrel.Tokens;
 
 namespace Squirrel
@@ -180,7 +181,7 @@ namespace Squirrel
                         return Read(TokenType.RightCurlyBrace, ReadCharacter);
                     }
                     default:
-                        throw new Exception($"invalid character found at index {_offset}: '{_current.Value}'");
+                        throw new TokenizerException($"invalid character found at index {_offset}: '{_current.Value}'");
                 }
             }
 
