@@ -14,6 +14,10 @@ namespace Squirrel
         public Tokenizer(string text)
         {
             _text = text;
+            if (string.IsNullOrEmpty(_text))
+            {
+                throw new TokenizerException("no input provided");
+            }
             _current = _text[_offset];
             _next = Peek();
         }
