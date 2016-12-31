@@ -13,7 +13,7 @@ namespace Squirrel
 
         public Tokenizer(string text)
         {
-            _text = text;
+            _text = text.Replace("\r\n", "\n");
             if (string.IsNullOrEmpty(_text))
             {
                 throw new TokenizerException("empty input");
@@ -35,7 +35,6 @@ namespace Squirrel
 
         private void Advance()
         {
-            // TODO: figure out how to deal with \r\n vs \n
             if (_current == '\n')
             {
                 _line++;
