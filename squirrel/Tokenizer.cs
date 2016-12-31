@@ -13,11 +13,11 @@ namespace Squirrel
 
         public Tokenizer(string text)
         {
-            _text = text.Replace("\r\n", "\n");
-            if (string.IsNullOrEmpty(_text))
+            if (string.IsNullOrEmpty(text))
             {
                 throw new TokenizerException("empty input");
             }
+            _text = text.Replace("\r\n", "\n");
             _current = _text[_offset];
             _next = Peek();
         }
