@@ -81,16 +81,32 @@
         }
     )
 
+    (fun {print-cell grid point}
+        {if (eq 1 (get-cell grid point))
+            {print "()"}
+            {print "  "}})
+
+    (fun {print-grid grid}
+        {foreach (coords grid) (lambda {row}
+            {block
+                (foreach row (lambda {point}
+                    {print-cell grid point}
+                ))
+                (print "\n")
+            }
+        )}
+    )
+
     (fun {generations grid count}
         {if (eq 0 count)
             {nil}
             {block
-                (map display grid)
-                (display "\n")
+                (print-grid grid)
+                (print "\n")
                 (generations (next-generation grid) (sub count 1))
             }
         }
     )
 
-    (generations octagon 10)
+    (generations octagon 6)
 )
