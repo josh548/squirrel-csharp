@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Squirrel.Exceptions;
@@ -14,6 +15,7 @@ namespace Squirrel
         private static readonly Dictionary<string, BuiltinFunctionDelegate> BuiltinFunctions =
             new Dictionary<string, BuiltinFunctionDelegate>
             {
+                {"include", BuiltinInclude},
                 {"display", BuiltinDisplay},
                 {"block", BuiltinBlock},
                 {"def", BuiltinDef},
@@ -49,6 +51,8 @@ namespace Squirrel
         }
 
         public INode Evaluate() => VisitNode(_root, new Environment());
+
+        public INode Evaluate(ref Environment env) => VisitNode(_root, env);
 
         private static INode VisitNode(INode node, Environment env)
         {
@@ -206,6 +210,37 @@ namespace Squirrel
             }
 
             return BuiltinEval(new List<INode> {head.Body}, env);
+        }
+
+        [ExpectedTypes(new[] {typeof(StringNode)})]
+        private static INode BuiltinInclude(List<INode> args, Environment env)
+        {
+            var modulePath = ((StringNode) args[0]).Value;
+
+            string input;
+            try
+            {
+                input = File.ReadAllText(modulePath);
+            }
+            catch (FileNotFoundException)
+            {
+                return new ErrorNode($"module not found: {modulePath}");
+            }
+
+            var tokenizer = new Tokenizer(input);
+            var tokens = tokenizer.Tokenize();
+            var parser = new Parser(tokens);
+            var evaluator = new Evaluator(parser.Parse());
+
+            var moduleEnv = new Environment();
+            var result = evaluator.Evaluate(ref moduleEnv);
+            if (result.GetType() == typeof(ErrorNode))
+            {
+                return result;
+            }
+            env.Extend(moduleEnv);
+
+            return Nil;
         }
 
         private static INode BuiltinDisplay(List<INode> args, Environment env)

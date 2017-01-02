@@ -30,9 +30,14 @@ namespace Squirrel
             return GetShallow(key) ?? _parent.Get(key);
         }
 
-        private INode GetShallow(string key)
+        private INode GetShallow(string key) => _definitions.ContainsKey(key) ? _definitions[key] : null;
+
+        public void Extend(Environment env)
         {
-            return _definitions.ContainsKey(key) ? _definitions[key] : null;
+            foreach (var definition in env._definitions)
+            {
+                Put(definition.Key, definition.Value);
+            }
         }
     }
 }
