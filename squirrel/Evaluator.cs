@@ -16,6 +16,7 @@ namespace Squirrel
             new Dictionary<string, BuiltinFunctionDelegate>
             {
                 {"include", BuiltinInclude},
+                {"print", BuiltinPrint},
                 {"display", BuiltinDisplay},
                 {"block", BuiltinBlock},
                 {"def", BuiltinDef},
@@ -243,16 +244,16 @@ namespace Squirrel
             return Nil;
         }
 
+        [ExpectedTypes(new[] {typeof(StringNode)})]
+        private static INode BuiltinPrint(List<INode> args, Environment env)
+        {
+            Console.Write(((StringNode) args[0]).Value);
+            return Nil;
+        }
+
         private static INode BuiltinDisplay(List<INode> args, Environment env)
         {
-            if (args[0].GetType() == typeof(StringNode))
-            {
-                Console.WriteLine(((StringNode) args[0]).Value);
-            }
-            else
-            {
-                Console.WriteLine(args[0]);
-            }
+            Console.WriteLine(args[0]);
             return Nil;
         }
 
