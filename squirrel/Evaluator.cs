@@ -82,6 +82,8 @@ namespace Squirrel
             }
         }
 
+        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedParameter.Local
         private static INode VisitStringNode(StringNode node, Environment env) => node;
 
         // ReSharper disable once UnusedMember.Local
