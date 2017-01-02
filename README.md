@@ -5,6 +5,7 @@ Squirrel is an interpreted programming language with a minimal syntax inspired b
 - [Comments] (#comments)
 - [Integers] (#integers)
 - [Symbols] (#symbols)
+- [Strings] (#strings)
 - [Booleans] (#booleans)
 - [Symbolic expressions] (#symbolic-expressions)
 - [Quoted expressions] (#quoted-expressions)
@@ -37,6 +38,14 @@ foo [ a symbol that might name a variable]
 add [ a symbol that names a builtin function ]
 Add [ not the same as the previous symbol ]
 example-with-hyphens
+```
+
+## Strings
+Strings are enclosed in double quotes. A double quote within a string must be escaped by a backslash.
+
+```
+"hello world"
+"\"squirrel\" is a programming language"
 ```
 
 ## Booleans
