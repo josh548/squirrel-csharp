@@ -170,6 +170,14 @@ Almost exactly like `def`. The only difference is that `outer` binds values to s
 (add a b c) -> 6
 ```
 
+print
+-----
+Takes a string argument and prints it to the console. Does *not* print a newline after the string. To print a newline, end the string with a newline character.
+
+```
+(print "example of the \"print\" function\n") -> example of the "print" function
+```
+
 quote
 -----
 Returns a list of the arguments.
