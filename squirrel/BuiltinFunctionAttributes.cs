@@ -1,5 +1,4 @@
 ﻿using System;
-using Squirrel.Nodes;
 
 namespace Squirrel
 {
