@@ -22,11 +22,30 @@ Takes a sequence of expressions and returns the result of the last expression of
 
 def
 ---
-Binds values to symbols in the current scope. The `def` function takes a list of symbols followed by a sequence of values to bind to those symbols.
+Takes a list of symbols followed by a sequence of values and binds the values to the symbols in the current scope. Bound values can be accessed from inner scopes, but not outer scopes.
 
 ```
-(def {x y} 1 2)
-(add x y) -> 3
+(block
+    (def {x y} 1 2)
+    (add x y)
+) -> 3
+
+[ results in an error because x and y are undefined in this scope ]
+(add x y)
+```
+
+A symbol bound in a certain scope will shadow the same symbol bound in an outer scope.
+
+```
+(def {x} 2)
+
+(block
+    (def {x} 3)
+    (mul x x)
+) -> 9
+
+[ the inner binding has no effect on the outer binding ]
+(mul x x) -> 4
 ```
 
 div
@@ -80,7 +99,7 @@ Concatenates a sequence of lists.
 
 lambda
 ------
-Creates a function. Takes two arguments, a list of the function parameters and the body of the function. A function must have at least one parameter.
+Takes two arguments, both quoted expressions. The first argument is a list of symbols, which are the function parameters. A function must have at least one parameter. The second argument is the body of the function.
 
 ```
 [ function that returns the square of a number ]
