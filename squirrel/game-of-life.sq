@@ -1,0 +1,96 @@
+(block
+    (include "stdlib.sq")
+
+    (def {octagon} {
+        {0 0 0 1 1 0 0 0}
+        {0 0 1 0 0 1 0 0}
+        {0 1 0 0 0 0 1 0}
+        {1 0 0 0 0 0 0 1}
+        {1 0 0 0 0 0 0 1}
+        {0 1 0 0 0 0 1 0}
+        {0 0 1 0 0 1 0 0}
+        {0 0 0 1 1 0 0 0}
+    })
+
+    (fun {adjacent-points point}
+        {block
+            (def {x y} (nth point 1) (nth point 2))
+            (quote
+                (quote (sub x 1) (sub y 1))
+                (quote (sub x 1) y)
+                (quote (sub x 1) (add y 1))
+                (quote x (sub y 1))
+                (quote x (add y 1))
+                (quote (add x 1) (sub y 1))
+                (quote (add x 1) y)
+                (quote (add x 1) (add y 1))
+            )
+        }
+    )
+
+    (fun {get-cell grid point}
+        {block
+            (def {x y} (nth point 1) (nth point 2))
+            (if (and
+                    (and (gt x 0) (le x (len grid)))
+                    (and (gt y 0) (le y (len (nth grid 1)))))
+                {nth (nth grid x) y}
+                {0}
+            )
+        }
+    )
+
+    (fun {get-neighbors grid point}
+        {foreach
+            (adjacent-points point)
+            (lambda {point} {get-cell grid point})
+        }
+    )
+
+    (fun {compute-new-value grid point}
+        {block
+            (def {living-neighbors} (sum (get-neighbors grid point)))
+            (if (eq 1 (get-cell grid point))
+                {if (or (eq living-neighbors 2) (eq living-neighbors 3))
+                    {1}
+                    {0}
+                }
+                {if (eq living-neighbors 3)
+                    {1}
+                    {0}
+                }
+            )
+        }
+    )
+
+    (fun {coords grid}
+        {block
+            (def {rows cols} (len grid) (len (head grid)))
+            (foreach (range rows)
+                (lambda {row}
+                    {foreach (range cols)
+                        (lambda {col} {quote row col})})
+            )
+        }
+    )
+
+    (fun {next-generation grid}
+        {foreach (coords grid) (lambda {row}
+            {foreach row (lambda {point}
+                {compute-new-value grid point})})
+        }
+    )
+
+    (fun {generations grid count}
+        {if (eq 0 count)
+            {nil}
+            {block
+                (map display grid)
+                (display "\n")
+                (generations (next-generation grid) (sub count 1))
+            }
+        }
+    )
+
+    (generations octagon 10)
+)

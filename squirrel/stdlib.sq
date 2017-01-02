@@ -101,6 +101,9 @@
                 (quote (function (first list)))
                 (map function (tail list))}})
 
+    (fun {foreach list function}
+        {map function list})
+
     [ applies a function against an accumulator and each item in a list to reduce the list to a single value ]
     (fun {reduce function list acc}
         {if (is-empty list)
