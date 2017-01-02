@@ -4,6 +4,7 @@
     {
         Integer,
         Symbol,
+        String,
         LeftParenthesis,
         RightParenthesis,
         LeftCurlyBrace,

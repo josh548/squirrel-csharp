@@ -70,6 +70,8 @@ namespace Squirrel
                     return QuotedExpression();
                 case TokenType.LeftParenthesis:
                     return SymbolicExpression();
+                case TokenType.String:
+                    return String();
                 case TokenType.Symbol:
                     return Symbol();
                 case TokenType.Integer:
@@ -109,6 +111,14 @@ namespace Squirrel
             Consume(TokenType.RightParenthesis);
 
             return new SymbolicExpressionNode(children);
+        }
+
+        private INode String()
+        {
+            var token = _currentToken;
+            Consume(TokenType.String);
+            // ReSharper disable once PossibleInvalidOperationException
+            return new StringNode(token.Value.Lexeme);
         }
 
         private INode Symbol()

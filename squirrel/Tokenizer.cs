@@ -74,6 +74,25 @@ namespace Squirrel
             Advance();
         }
 
+        private string ReadString()
+        {
+            var lexeme = string.Empty;
+
+            Advance();
+            while (_current.HasValue && _current.Value != '"')
+            {
+                if (_current.Value == '\\' && (_next.HasValue && _next.Value == '"'))
+                {
+                    Advance();
+                }
+                lexeme += _current.Value;
+                Advance();
+            }
+            Advance();
+
+            return lexeme;
+        }
+
         private string ReadInteger()
         {
             var lexeme = string.Empty;
@@ -145,6 +164,11 @@ namespace Squirrel
                 {
                     SkipComment();
                     continue;
+                }
+
+                if (_current.Value == '"')
+                {
+                    return Read(TokenType.String, ReadString);
                 }
 
                 if (char.IsDigit(_current.Value))
