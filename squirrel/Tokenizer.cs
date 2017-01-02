@@ -81,9 +81,22 @@ namespace Squirrel
             Advance();
             while (_current.HasValue && _current.Value != '"')
             {
-                if (_current.Value == '\\' && (_next.HasValue && _next.Value == '"'))
+                if (_current.Value == '\\' && _next.HasValue)
                 {
-                    Advance();
+                    if (_next.Value == '"')
+                    {
+                        Advance();
+                        Advance();
+                        lexeme += '"';
+                        continue;
+                    }
+                    if (_next.Value == 'n')
+                    {
+                        Advance();
+                        Advance();
+                        lexeme += '\n';
+                        continue;
+                    }
                 }
                 lexeme += _current.Value;
                 Advance();

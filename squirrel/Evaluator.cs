@@ -245,7 +245,14 @@ namespace Squirrel
 
         private static INode BuiltinDisplay(List<INode> args, Environment env)
         {
-            Console.WriteLine(args[0]);
+            if (args[0].GetType() == typeof(StringNode))
+            {
+                Console.WriteLine(((StringNode) args[0]).Value);
+            }
+            else
+            {
+                Console.WriteLine(args[0]);
+            }
             return Nil;
         }
 
