@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Squirrel.Exceptions;
 using Squirrel.Nodes;
 
 namespace Squirrel
@@ -96,7 +95,7 @@ namespace Squirrel
         {
             if (node.Children.Count < 2)
             {
-                throw new EvaluatorException("symbolic expression must contain a symbol and at least one argument");
+                return new ErrorNode("symbolic expression must contain a symbol and at least one argument");
             }
 
             var visitedChildren = new List<INode>();
@@ -123,7 +122,7 @@ namespace Squirrel
                 return EvaluateLambdaFunction((LambdaFunctionNode) head, tail, new Environment(env));
             }
 
-            throw new EvaluatorException("first element of symbolic expression must be a symbol or lambda function");
+            return new ErrorNode("first element of symbolic expression must be a symbol or lambda function");
         }
 
         // ReSharper disable once UnusedMember.Local
@@ -144,7 +143,7 @@ namespace Squirrel
 
             if (!BuiltinFunctions.ContainsKey(functionName))
             {
-                throw new EvaluatorException($"function is not defined: {functionName}");
+                return new ErrorNode($"function is not defined: {functionName}");
             }
 
             var function = BuiltinFunctions[functionName];
