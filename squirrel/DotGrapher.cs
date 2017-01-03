@@ -56,6 +56,13 @@ namespace Squirrel
             => _sb.Append($"\tnode{_nodes.Count} [label=\"Symbol({node.Value})\"]\n");
 
         // ReSharper disable once UnusedMember.Local
+        private void VisitStringNode(StringNode node)
+        {
+            var displayValue = node.Value.Replace("\n", "\\\\n");
+            _sb.Append($"\tnode{_nodes.Count} [label=\"String(\\\"{displayValue}\\\")\"]\n");
+        }
+
+        // ReSharper disable once UnusedMember.Local
         private void VisitSymbolicExpressionNode(SymbolicExpressionNode node)
         {
             _sb.Append($"\tnode{_nodes.Count} [label=\"SymbolicExpression\"]\n");
