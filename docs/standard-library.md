@@ -22,6 +22,14 @@ Takes two conditions. Returns `true` if both conditions evaluate to `true`, othe
 )
 ```
 
+any
+---
+Takes a function and a list. Returns `true` if the function returns `true` for any item of the list.
+
+```
+(any is-odd {2 3 4}) -> true
+```
+
 cube
 ----
 Returns the cube of a number.
@@ -216,14 +224,6 @@ Reverses a list.
 
 ```
 (reverse {a b c}) -> {c b a})
-```
-
-some
-----
-Takes a function and a list. Returns `true` if the function returns `true` for at least one item of the list.
-
-```
-(some is-odd {2 3 4}) -> true
 ```
 
 square

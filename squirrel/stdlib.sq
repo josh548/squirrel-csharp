@@ -132,7 +132,7 @@
     (fun {every function list}
         {eq (len list) (len (filter function list))})
 
-    [ returns true if the function returns true for at least one item in the list | (some is-odd {2 4 6}) -> false ]
-    (fun {some function list}
+    [ returns true if the function returns true for any item in the list | (any is-odd {2 4 6}) -> false ]
+    (fun {any function list}
         {not (is-empty (filter function list))})
 )
