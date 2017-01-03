@@ -14,28 +14,28 @@ namespace Squirrel
         private static readonly Dictionary<string, BuiltinFunctionDelegate> BuiltinFunctions =
             new Dictionary<string, BuiltinFunctionDelegate>
             {
-                {"include", BuiltinInclude},
-                {"print", BuiltinPrint},
-                {"display", BuiltinDisplay},
+                {"add", BuiltinAdd},
                 {"block", BuiltinBlock},
                 {"def", BuiltinDef},
-                {"outer", BuiltinOuter},
-                {"add", BuiltinAdd},
-                {"sub", BuiltinSub},
-                {"mul", BuiltinMul},
+                {"display", BuiltinDisplay},
                 {"div", BuiltinDiv},
-                {"mod", BuiltinMod},
-                {"eval", BuiltinEval},
-                {"quote", BuiltinQuote},
-                {"lambda", BuiltinLambda},
                 {"eq", BuiltinEq},
-                {"lt", BuiltinLt},
+                {"eval", BuiltinEval},
                 {"gt", BuiltinGt},
-                {"nth", BuiltinNth},
-                {"len", BuiltinLen},
                 {"head", BuiltinHead},
-                {"tail", BuiltinTail},
+                {"include", BuiltinInclude},
                 {"join", BuiltinJoin},
+                {"lambda", BuiltinLambda},
+                {"len", BuiltinLen},
+                {"lt", BuiltinLt},
+                {"mod", BuiltinMod},
+                {"mul", BuiltinMul},
+                {"nth", BuiltinNth},
+                {"outer", BuiltinOuter},
+                {"print", BuiltinPrint},
+                {"quote", BuiltinQuote},
+                {"sub", BuiltinSub},
+                {"tail", BuiltinTail},
                 {"when", BuiltinWhen}
             };
 
@@ -212,48 +212,15 @@ namespace Squirrel
             return BuiltinEval(new List<INode> {head.Body}, env);
         }
 
-        [ExpectedTypes(new[] {typeof(StringNode)})]
-        private static INode BuiltinInclude(List<INode> args, Environment env)
+        [ExpectedType(typeof(IntegerNode))]
+        private static INode BuiltinAdd(List<INode> args, Environment env)
         {
-            var modulePath = ((StringNode) args[0]).Value;
-
-            string input;
-            try
+            if (args.Count < 2)
             {
-                input = File.ReadAllText(modulePath);
+                return new ErrorNode($"function takes at least 2 arguments ({args.Count} given)");
             }
-            catch (FileNotFoundException)
-            {
-                return new ErrorNode($"module not found: {modulePath}");
-            }
-
-            var tokenizer = new Tokenizer(input);
-            var tokens = tokenizer.Tokenize();
-            var parser = new Parser(tokens);
-            var evaluator = new Evaluator(parser.Parse());
-
-            var moduleEnv = new Environment();
-            var result = evaluator.Evaluate(ref moduleEnv);
-            if (result.GetType() == typeof(ErrorNode))
-            {
-                return result;
-            }
-            env.Extend(moduleEnv);
-
-            return Nil;
-        }
-
-        [ExpectedTypes(new[] {typeof(StringNode)})]
-        private static INode BuiltinPrint(List<INode> args, Environment env)
-        {
-            Console.Write(((StringNode) args[0]).Value);
-            return Nil;
-        }
-
-        private static INode BuiltinDisplay(List<INode> args, Environment env)
-        {
-            Console.WriteLine(args[0]);
-            return Nil;
+            var sum = args.Sum(arg => ((IntegerNode) arg).Value);
+            return new IntegerNode(sum);
         }
 
         private static INode BuiltinBlock(List<INode> args, Environment env) => args[args.Count - 1];
@@ -291,6 +258,187 @@ namespace Squirrel
             return Nil;
         }
 
+        private static INode BuiltinDisplay(List<INode> args, Environment env)
+        {
+            Console.WriteLine(args[0]);
+            return Nil;
+        }
+
+        [ExpectedTypes(new[] {typeof(IntegerNode), typeof(IntegerNode)})]
+        private static INode BuiltinDiv(List<INode> args, Environment env)
+        {
+            var first = ((IntegerNode) args[0]).Value;
+            var second = ((IntegerNode) args[1]).Value;
+
+            if (second == 0)
+            {
+                return new ErrorNode("cannot divide by zero");
+            }
+
+            var quotient = first / second;
+            return new IntegerNode(quotient);
+        }
+
+        private static INode BuiltinEq(List<INode> args, Environment env)
+        {
+            if (args.Count < 2)
+            {
+                return new ErrorNode($"function takes exactly 2 arguments ({args.Count} given)");
+            }
+
+            return args[0].Equals(args[1]) ? True : False;
+        }
+
+        [ExpectedTypes(new[] {typeof(QuotedExpressionNode)})]
+        private static INode BuiltinEval(List<INode> args, Environment env)
+        {
+            var children = ((QuotedExpressionNode) args[0]).Children;
+
+            switch (children.Count)
+            {
+                case 0:
+                    return new ErrorNode("cannot evalute empty quoted expression");
+                case 1:
+                    return VisitNode(children[0], env);
+                default:
+                    return VisitNode(new SymbolicExpressionNode(children), env);
+            }
+        }
+
+        [ExpectedTypes(new[] {typeof(IntegerNode), typeof(IntegerNode)})]
+        private static INode BuiltinGt(List<INode> args, Environment env)
+        {
+            var first = ((IntegerNode) args[0]).Value;
+            var second = ((IntegerNode) args[1]).Value;
+            return first > second ? True : False;
+        }
+
+        [ExpectedTypes(new[] {typeof(QuotedExpressionNode)})]
+        private static INode BuiltinHead(List<INode> args, Environment env)
+        {
+            var list = ((QuotedExpressionNode) args[0]).Children;
+            if (list.Count == 0)
+            {
+                return Nil;
+            }
+            return VisitNode(list.Head(), env);
+        }
+
+        [ExpectedTypes(new[] {typeof(StringNode)})]
+        private static INode BuiltinInclude(List<INode> args, Environment env)
+        {
+            var modulePath = ((StringNode) args[0]).Value;
+
+            string input;
+            try
+            {
+                input = File.ReadAllText(modulePath);
+            }
+            catch (FileNotFoundException)
+            {
+                return new ErrorNode($"module not found: {modulePath}");
+            }
+
+            var tokenizer = new Tokenizer(input);
+            var tokens = tokenizer.Tokenize();
+            var parser = new Parser(tokens);
+            var evaluator = new Evaluator(parser.Parse());
+
+            var moduleEnv = new Environment();
+            var result = evaluator.Evaluate(ref moduleEnv);
+            if (result.GetType() == typeof(ErrorNode))
+            {
+                return result;
+            }
+            env.Extend(moduleEnv);
+
+            return Nil;
+        }
+
+        [ExpectedType(typeof(QuotedExpressionNode))]
+        private static INode BuiltinJoin(List<INode> args, Environment env)
+        {
+            var joined = new List<INode>();
+            foreach (var arg in args)
+            {
+                joined.AddRange(((QuotedExpressionNode) arg).Children);
+            }
+            return new QuotedExpressionNode(joined);
+        }
+
+        [ExpectedTypes(new[] {typeof(QuotedExpressionNode), typeof(QuotedExpressionNode)})]
+        private static INode BuiltinLambda(List<INode> args, Environment env)
+        {
+            var parameters = (QuotedExpressionNode) args[0];
+            if (parameters.Children.Any(node => !(node is SymbolNode)))
+            {
+                return new ErrorNode("list of lambda function parameters must contain only symbols");
+            }
+
+            var body = (QuotedExpressionNode) args[1];
+
+            return new LambdaFunctionNode(parameters, body);
+        }
+
+        [ExpectedTypes(new[] {typeof(QuotedExpressionNode)})]
+        private static INode BuiltinLen(List<INode> args, Environment env)
+        {
+            return new IntegerNode(((QuotedExpressionNode) args[0]).Children.Count);
+        }
+
+        [ExpectedTypes(new[] {typeof(IntegerNode), typeof(IntegerNode)})]
+        private static INode BuiltinLt(List<INode> args, Environment env)
+        {
+            var first = ((IntegerNode) args[0]).Value;
+            var second = ((IntegerNode) args[1]).Value;
+            return first < second ? True : False;
+        }
+
+        [ExpectedTypes(new[] {typeof(IntegerNode), typeof(IntegerNode)})]
+        private static INode BuiltinMod(List<INode> args, Environment env)
+        {
+            var first = ((IntegerNode) args[0]).Value;
+            var second = ((IntegerNode) args[1]).Value;
+
+            if (second == 0)
+            {
+                return new ErrorNode("cannot divide by zero");
+            }
+
+            var remainder = first % second;
+            return new IntegerNode(remainder);
+        }
+
+        [ExpectedType(typeof(IntegerNode))]
+        private static INode BuiltinMul(List<INode> args, Environment env)
+        {
+            if (args.Count < 2)
+            {
+                return new ErrorNode($"function takes exactly 2 arguments ({args.Count} given)");
+            }
+            var product = args.Aggregate(1, (current, arg) => current * ((IntegerNode) arg).Value);
+            return new IntegerNode(product);
+        }
+
+        [ExpectedTypes(new[] {typeof(QuotedExpressionNode), typeof(IntegerNode)})]
+        private static INode BuiltinNth(List<INode> args, Environment env)
+        {
+            var list = ((QuotedExpressionNode) args[0]).Children;
+            var n = ((IntegerNode) args[1]).Value;
+
+            if (n < 1)
+            {
+                return new ErrorNode($"n ({n}) must be greater than 0");
+            }
+
+            if (n > list.Count)
+            {
+                return new ErrorNode($"n ({n}) must not be greater than the length of the list ({list.Count})");
+            }
+
+            return list[n - 1];
+        }
+
         private static INode BuiltinOuter(List<INode> args, Environment env)
         {
             var names = ((QuotedExpressionNode) (args.Head())).Children;
@@ -324,15 +472,16 @@ namespace Squirrel
             return Nil;
         }
 
-        [ExpectedType(typeof(IntegerNode))]
-        private static INode BuiltinAdd(List<INode> args, Environment env)
+        [ExpectedTypes(new[] {typeof(StringNode)})]
+        private static INode BuiltinPrint(List<INode> args, Environment env)
         {
-            if (args.Count < 2)
-            {
-                return new ErrorNode($"function takes at least 2 arguments ({args.Count} given)");
-            }
-            var sum = args.Sum(arg => ((IntegerNode) arg).Value);
-            return new IntegerNode(sum);
+            Console.Write(((StringNode) args[0]).Value);
+            return Nil;
+        }
+
+        private static INode BuiltinQuote(List<INode> args, Environment env)
+        {
+            return new QuotedExpressionNode(args);
         }
 
         [ExpectedTypes(new[] {typeof(IntegerNode), typeof(IntegerNode)})]
@@ -344,160 +493,11 @@ namespace Squirrel
             return new IntegerNode(difference);
         }
 
-        [ExpectedType(typeof(IntegerNode))]
-        private static INode BuiltinMul(List<INode> args, Environment env)
-        {
-            if (args.Count < 2)
-            {
-                return new ErrorNode($"function takes exactly 2 arguments ({args.Count} given)");
-            }
-            var product = args.Aggregate(1, (current, arg) => current * ((IntegerNode) arg).Value);
-            return new IntegerNode(product);
-        }
-
-        [ExpectedTypes(new[] {typeof(IntegerNode), typeof(IntegerNode)})]
-        private static INode BuiltinDiv(List<INode> args, Environment env)
-        {
-            var first = ((IntegerNode) args[0]).Value;
-            var second = ((IntegerNode) args[1]).Value;
-
-            if (second == 0)
-            {
-                return new ErrorNode("cannot divide by zero");
-            }
-
-            var quotient = first / second;
-            return new IntegerNode(quotient);
-        }
-
-        [ExpectedTypes(new[] {typeof(IntegerNode), typeof(IntegerNode)})]
-        private static INode BuiltinMod(List<INode> args, Environment env)
-        {
-            var first = ((IntegerNode) args[0]).Value;
-            var second = ((IntegerNode) args[1]).Value;
-
-            if (second == 0)
-            {
-                return new ErrorNode("cannot divide by zero");
-            }
-
-            var remainder = first % second;
-            return new IntegerNode(remainder);
-        }
-
-        [ExpectedTypes(new[] {typeof(QuotedExpressionNode)})]
-        private static INode BuiltinEval(List<INode> args, Environment env)
-        {
-            var children = ((QuotedExpressionNode) args[0]).Children;
-
-            switch (children.Count)
-            {
-                case 0:
-                    return new ErrorNode("cannot evalute empty quoted expression");
-                case 1:
-                    return VisitNode(children[0], env);
-                default:
-                    return VisitNode(new SymbolicExpressionNode(children), env);
-            }
-        }
-
-        private static INode BuiltinQuote(List<INode> args, Environment env)
-        {
-            return new QuotedExpressionNode(args);
-        }
-
-        [ExpectedTypes(new[] {typeof(QuotedExpressionNode), typeof(QuotedExpressionNode)})]
-        private static INode BuiltinLambda(List<INode> args, Environment env)
-        {
-            var parameters = (QuotedExpressionNode) args[0];
-            if (parameters.Children.Any(node => !(node is SymbolNode)))
-            {
-                return new ErrorNode("list of lambda function parameters must contain only symbols");
-            }
-
-            var body = (QuotedExpressionNode) args[1];
-
-            return new LambdaFunctionNode(parameters, body);
-        }
-
-        private static INode BuiltinEq(List<INode> args, Environment env)
-        {
-            if (args.Count < 2)
-            {
-                return new ErrorNode($"function takes exactly 2 arguments ({args.Count} given)");
-            }
-
-            return args[0].Equals(args[1]) ? True : False;
-        }
-
-        [ExpectedTypes(new[] {typeof(IntegerNode), typeof(IntegerNode)})]
-        private static INode BuiltinLt(List<INode> args, Environment env)
-        {
-            var first = ((IntegerNode) args[0]).Value;
-            var second = ((IntegerNode) args[1]).Value;
-            return first < second ? True : False;
-        }
-
-        [ExpectedTypes(new[] {typeof(IntegerNode), typeof(IntegerNode)})]
-        private static INode BuiltinGt(List<INode> args, Environment env)
-        {
-            var first = ((IntegerNode) args[0]).Value;
-            var second = ((IntegerNode) args[1]).Value;
-            return first > second ? True : False;
-        }
-
-        [ExpectedTypes(new[] {typeof(QuotedExpressionNode), typeof(IntegerNode)})]
-        private static INode BuiltinNth(List<INode> args, Environment env)
-        {
-            var list = ((QuotedExpressionNode) args[0]).Children;
-            var n = ((IntegerNode) args[1]).Value;
-
-            if (n < 1)
-            {
-                return new ErrorNode($"n ({n}) must be greater than 0");
-            }
-
-            if (n > list.Count)
-            {
-                return new ErrorNode($"n ({n}) must not be greater than the length of the list ({list.Count})");
-            }
-
-            return list[n - 1];
-        }
-
-        [ExpectedTypes(new[] {typeof(QuotedExpressionNode)})]
-        private static INode BuiltinLen(List<INode> args, Environment env)
-        {
-            return new IntegerNode(((QuotedExpressionNode) args[0]).Children.Count);
-        }
-
-        [ExpectedTypes(new[] {typeof(QuotedExpressionNode)})]
-        private static INode BuiltinHead(List<INode> args, Environment env)
-        {
-            var list = ((QuotedExpressionNode) args[0]).Children;
-            if (list.Count == 0)
-            {
-                return Nil;
-            }
-            return VisitNode(list.Head(), env);
-        }
-
         [ExpectedTypes(new[] {typeof(QuotedExpressionNode)})]
         private static INode BuiltinTail(List<INode> args, Environment env)
         {
             var tail = ((QuotedExpressionNode) args[0]).Children.Tail();
             return new QuotedExpressionNode(tail);
-        }
-
-        [ExpectedType(typeof(QuotedExpressionNode))]
-        private static INode BuiltinJoin(List<INode> args, Environment env)
-        {
-            var joined = new List<INode>();
-            foreach (var arg in args)
-            {
-                joined.AddRange(((QuotedExpressionNode) arg).Children);
-            }
-            return new QuotedExpressionNode(joined);
         }
 
         [ExpectedType(typeof(QuotedExpressionNode))]
