@@ -205,21 +205,15 @@ namespace Squirrel
                 switch (_current.Value)
                 {
                     case '(':
-                    {
                         return Read(TokenType.LeftParenthesis, ReadCharacter);
-                    }
                     case ')':
-                    {
                         return Read(TokenType.RightParenthesis, ReadCharacter);
-                    }
                     case '{':
-                    {
                         return Read(TokenType.LeftCurlyBrace, ReadCharacter);
-                    }
                     case '}':
-                    {
                         return Read(TokenType.RightCurlyBrace, ReadCharacter);
-                    }
+                    case '_':
+                        return Read(TokenType.Symbol, ReadCharacter);
                     default:
                         throw new TokenizerException($"invalid character found at index {_offset}: '{_current.Value}'");
                 }

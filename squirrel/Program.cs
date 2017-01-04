@@ -46,7 +46,6 @@ namespace Squirrel
             var env = new Environment();
 
             const string prompt = ">>> ";
-            var lastOutput = "";
 
             Console.WriteLine("Press ^D to quit. Use an underscore ('_') to refer to the last output.");
             while (true)
@@ -58,8 +57,6 @@ namespace Squirrel
                 {
                     break;
                 }
-
-                line = line.Replace("_", lastOutput);
                 if (string.IsNullOrWhiteSpace(line))
                 {
                     continue;
@@ -81,7 +78,11 @@ namespace Squirrel
                     continue;
                 }
                 Console.WriteLine(result);
-                lastOutput = result.ToString();
+
+                if (result.GetType() != typeof(ErrorNode))
+                {
+                    env.Put("_", result);
+                }
             }
         }
 
