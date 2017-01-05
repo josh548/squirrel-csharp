@@ -93,9 +93,9 @@ namespace Squirrel
         // ReSharper disable once UnusedMember.Local
         private static INode VisitSymbolicExpressionNode(SymbolicExpressionNode node, Environment env)
         {
-            if (node.Children.Count < 2)
+            if (node.Children.Count == 0)
             {
-                return new ErrorNode("symbolic expression must contain a symbol and at least one argument");
+                return new ErrorNode("symbolic expression cannot be empty");
             }
 
             var visitedChildren = new List<INode>();

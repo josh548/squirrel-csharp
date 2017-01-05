@@ -99,7 +99,7 @@ Concatenates a sequence of lists.
 
 lambda
 ------
-Takes two arguments, both quoted expressions. The first argument is a list of symbols, which are the function parameters. A function must have at least one parameter. The second argument is the body of the function.
+Takes two arguments, both quoted expressions. The first argument is a list of symbols, which are the function parameters. An empty list means the function does not have parameters. The second argument is the body of the function.
 
 ```
 [ function that returns the square of a number ]
