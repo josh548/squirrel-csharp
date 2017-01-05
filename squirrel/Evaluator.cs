@@ -227,6 +227,11 @@ namespace Squirrel
 
         private static INode BuiltinDef(List<INode> args, Environment env)
         {
+            if (args.Count < 2)
+            {
+                return new ErrorNode($"function takes at least 2 arguments ({args.Count} given)");
+            }
+
             var names = ((QuotedExpressionNode) (args.Head())).Children;
 
             if (names.Any(name => name.GetType() != typeof(SymbolNode)))
