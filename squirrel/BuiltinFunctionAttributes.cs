@@ -18,7 +18,7 @@ namespace Squirrel
     {
         public readonly Type[] ExpectedTypes;
 
-        public ExpectedTypesAttribute(Type[] expectedTypes)
+        public ExpectedTypesAttribute(params Type[] expectedTypes)
         {
             ExpectedTypes = expectedTypes;
         }

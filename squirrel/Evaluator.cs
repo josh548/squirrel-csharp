@@ -264,7 +264,7 @@ namespace Squirrel
             return Nil;
         }
 
-        [ExpectedTypes(new[] {typeof(IntegerNode), typeof(IntegerNode)})]
+        [ExpectedTypes(typeof(IntegerNode), typeof(IntegerNode))]
         private static INode BuiltinDiv(List<INode> args, Environment env)
         {
             var first = ((IntegerNode) args[0]).Value;
@@ -289,7 +289,7 @@ namespace Squirrel
             return args[0].Equals(args[1]) ? True : False;
         }
 
-        [ExpectedTypes(new[] {typeof(QuotedExpressionNode)})]
+        [ExpectedTypes(typeof(QuotedExpressionNode))]
         private static INode BuiltinEval(List<INode> args, Environment env)
         {
             var children = ((QuotedExpressionNode) args[0]).Children;
@@ -305,7 +305,7 @@ namespace Squirrel
             }
         }
 
-        [ExpectedTypes(new[] {typeof(IntegerNode), typeof(IntegerNode)})]
+        [ExpectedTypes(typeof(IntegerNode), typeof(IntegerNode))]
         private static INode BuiltinGt(List<INode> args, Environment env)
         {
             var first = ((IntegerNode) args[0]).Value;
@@ -313,7 +313,7 @@ namespace Squirrel
             return first > second ? True : False;
         }
 
-        [ExpectedTypes(new[] {typeof(QuotedExpressionNode)})]
+        [ExpectedTypes(typeof(QuotedExpressionNode))]
         private static INode BuiltinHead(List<INode> args, Environment env)
         {
             var list = ((QuotedExpressionNode) args[0]).Children;
@@ -324,7 +324,7 @@ namespace Squirrel
             return VisitNode(list.Head(), env);
         }
 
-        [ExpectedTypes(new[] {typeof(StringNode)})]
+        [ExpectedTypes(typeof(StringNode))]
         private static INode BuiltinInclude(List<INode> args, Environment env)
         {
             var modulePath = ((StringNode) args[0]).Value;
@@ -366,7 +366,7 @@ namespace Squirrel
             return new QuotedExpressionNode(joined);
         }
 
-        [ExpectedTypes(new[] {typeof(QuotedExpressionNode), typeof(QuotedExpressionNode)})]
+        [ExpectedTypes(typeof(QuotedExpressionNode), typeof(QuotedExpressionNode))]
         private static INode BuiltinLambda(List<INode> args, Environment env)
         {
             var parameters = (QuotedExpressionNode) args[0];
@@ -380,13 +380,13 @@ namespace Squirrel
             return new LambdaFunctionNode(parameters, body);
         }
 
-        [ExpectedTypes(new[] {typeof(QuotedExpressionNode)})]
+        [ExpectedTypes(typeof(QuotedExpressionNode))]
         private static INode BuiltinLen(List<INode> args, Environment env)
         {
             return new IntegerNode(((QuotedExpressionNode) args[0]).Children.Count);
         }
 
-        [ExpectedTypes(new[] {typeof(IntegerNode), typeof(IntegerNode)})]
+        [ExpectedTypes(typeof(IntegerNode), typeof(IntegerNode))]
         private static INode BuiltinLt(List<INode> args, Environment env)
         {
             var first = ((IntegerNode) args[0]).Value;
@@ -394,7 +394,7 @@ namespace Squirrel
             return first < second ? True : False;
         }
 
-        [ExpectedTypes(new[] {typeof(IntegerNode), typeof(IntegerNode)})]
+        [ExpectedTypes(typeof(IntegerNode), typeof(IntegerNode))]
         private static INode BuiltinMod(List<INode> args, Environment env)
         {
             var first = ((IntegerNode) args[0]).Value;
@@ -420,7 +420,7 @@ namespace Squirrel
             return new IntegerNode(product);
         }
 
-        [ExpectedTypes(new[] {typeof(QuotedExpressionNode), typeof(IntegerNode)})]
+        [ExpectedTypes(typeof(QuotedExpressionNode), typeof(IntegerNode))]
         private static INode BuiltinNth(List<INode> args, Environment env)
         {
             var list = ((QuotedExpressionNode) args[0]).Children;
@@ -472,7 +472,7 @@ namespace Squirrel
             return Nil;
         }
 
-        [ExpectedTypes(new[] {typeof(StringNode)})]
+        [ExpectedTypes(typeof(StringNode))]
         private static INode BuiltinPrint(List<INode> args, Environment env)
         {
             Console.Write(((StringNode) args[0]).Value);
@@ -484,7 +484,7 @@ namespace Squirrel
             return new QuotedExpressionNode(args);
         }
 
-        [ExpectedTypes(new[] {typeof(IntegerNode), typeof(IntegerNode)})]
+        [ExpectedTypes(typeof(IntegerNode), typeof(IntegerNode))]
         private static INode BuiltinSub(List<INode> args, Environment env)
         {
             var first = ((IntegerNode) args[0]).Value;
@@ -493,7 +493,7 @@ namespace Squirrel
             return new IntegerNode(difference);
         }
 
-        [ExpectedTypes(new[] {typeof(QuotedExpressionNode)})]
+        [ExpectedTypes(typeof(QuotedExpressionNode))]
         private static INode BuiltinTail(List<INode> args, Environment env)
         {
             var tail = ((QuotedExpressionNode) args[0]).Children.Tail();
