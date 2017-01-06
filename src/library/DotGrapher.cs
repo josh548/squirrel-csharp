@@ -43,7 +43,7 @@ namespace Squirrel
             _nodes.Add(node);
 
             var methodName = $"Visit{node.GetType().Name}";
-            var method = GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+            var method = GetType().GetTypeInfo().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
             method.Invoke(this, new object[] {node});
         }
 

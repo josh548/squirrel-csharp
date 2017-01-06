@@ -214,4 +214,3 @@ Takes a variable number of arguments called  *clauses*. Each clause is a list co
     {(eq x 3) wrong}
 ) -> right
 ```
-

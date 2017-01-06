@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Squirrel.Nodes
+﻿namespace Squirrel.Nodes
 {
     public class StringNode : INode
     {

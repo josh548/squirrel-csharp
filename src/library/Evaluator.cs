@@ -57,7 +57,7 @@ namespace Squirrel
         private static INode VisitNode(INode node, Environment env)
         {
             var methodName = $"Visit{node.GetType().Name}";
-            var method = typeof(Evaluator).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
+            var method = typeof(Evaluator).GetTypeInfo().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
             return (INode) method.Invoke(null, new object[] {node, env});
         }
 

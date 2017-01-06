@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
+using Squirrel;
 using Squirrel.Exceptions;
 using Squirrel.Nodes;
 
-namespace Squirrel
+namespace ConsoleApplication
 {
-    internal class Program
+    public class Program
     {
         public static void Main(string[] args)
         {
@@ -22,7 +23,7 @@ namespace Squirrel
         private static void RunFile(string path)
         {
             var text = File.ReadAllText(path);
-            var env = new Environment();
+            var env = new Squirrel.Environment();
             INode result;
             try
             {
@@ -43,7 +44,7 @@ namespace Squirrel
 
         private static void RunInteractiveConsole()
         {
-            var env = new Environment();
+            var env = new Squirrel.Environment();
 
             const string prompt = ">>> ";
 
@@ -86,7 +87,7 @@ namespace Squirrel
             }
         }
 
-        private static INode Interpret(string text, ref Environment env)
+        private static INode Interpret(string text, ref Squirrel.Environment env)
         {
             var tokenizer = new Tokenizer(text);
             var parser = new Parser(tokenizer.Tokenize());
