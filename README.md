@@ -2,15 +2,15 @@
 Squirrel is an interpreted programming language with a minimal syntax inspired by Lisp.
 
 ## Table of Contents
-- [Comments] (#comments)
-- [Integers] (#integers)
-- [Symbols] (#symbols)
-- [Strings] (#strings)
-- [Booleans] (#booleans)
-- [Symbolic expressions] (#symbolic-expressions)
-- [Quoted expressions] (#quoted-expressions)
-- [Lambda functions] (#lambda-functions)
-- [Defining values] (#defining-values)
+- [Comments](#comments)
+- [Integers](#integers)
+- [Symbols](#symbols)
+- [Strings](#strings)
+- [Booleans](#booleans)
+- [Symbolic expressions](#symbolic-expressions)
+- [Quoted expressions](#quoted-expressions)
+- [Lambda functions](#lambda-functions)
+- [Defining values](#defining-values)
 
 ## Comments
 Comments are enclosed in square brackets and can span multiple lines.
