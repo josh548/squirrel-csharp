@@ -29,6 +29,7 @@ namespace Squirrel
                 {"len", BuiltinLen},
                 {"lt", BuiltinLt},
                 {"mod", BuiltinMod},
+                {"module", BuiltinModule},
                 {"mul", BuiltinMul},
                 {"nth", BuiltinNth},
                 {"outer", BuiltinOuter},
@@ -355,7 +356,7 @@ namespace Squirrel
             {
                 return result;
             }
-            env.Extend(moduleEnv);
+            env.Parent.Extend(moduleEnv);
 
             return Nil;
         }
@@ -412,6 +413,11 @@ namespace Squirrel
 
             var remainder = first % second;
             return new IntegerNode(remainder);
+        }
+
+        private static INode BuiltinModule(List<INode> args, Environment env) {
+            env.Parent.Extend(env);
+            return Nil;
         }
 
         [ExpectedType(typeof(IntegerNode))]

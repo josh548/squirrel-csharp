@@ -1,4 +1,4 @@
-(block
+(module
 
     [ define a function called 'fun' to simplify defining functions
       def example: (def {name} (lambda {arguments} {body}))

@@ -1,4 +1,4 @@
-(block
+(module
     (include "stdlib.sq")
 
     (def {octagon} {
