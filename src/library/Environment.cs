@@ -19,7 +19,9 @@ namespace Squirrel
 
         public void Put(string key, INode value) => _definitions[key] = value;
 
-        public void PutOuter(string key, INode value) => _parent.Put(key, value);
+        public void PutParent(string key, INode value) => _parent.Put(key, value);
+
+        public void PutGrandparent(string key, INode value) => _parent.PutParent(key, value);
 
         public INode Get(string key)
         {

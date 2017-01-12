@@ -58,7 +58,7 @@ namespace Squirrel
         {
             var methodName = $"Visit{node.GetType().Name}";
             var method = typeof(Evaluator).GetTypeInfo().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
-            return (INode) method.Invoke(null, new object[] {node, env});
+            return (INode) method.Invoke(null, new object[] {node, new Environment(env)});
         }
 
         // ReSharper disable once UnusedMember.Local
@@ -257,7 +257,7 @@ namespace Squirrel
                     return new ErrorNode($"cannot redefine builtin function: {name}");
                 }
 
-                env.Put(name, value);
+                env.PutParent(name, value);
             }
 
             return Nil;
@@ -476,7 +476,7 @@ namespace Squirrel
                     return new ErrorNode($"cannot redefine builtin function: {name}");
                 }
 
-                env.PutOuter(name, value);
+                env.PutGrandparent(name, value);
             }
 
             return Nil;
