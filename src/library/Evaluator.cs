@@ -119,7 +119,7 @@ namespace Squirrel
 
             if (head.GetType() == typeof(LambdaFunctionNode))
             {
-                return EvaluateLambdaFunction((LambdaFunctionNode) head, tail, new Environment(env));
+                return EvaluateLambdaFunction((LambdaFunctionNode) head, tail, env);
             }
 
             return new ErrorNode("first element of symbolic expression must be a symbol or lambda function");
