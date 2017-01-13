@@ -325,7 +325,7 @@ namespace Squirrel
             var list = ((QuotedExpressionNode) args[0]).Children;
             if (list.Count == 0)
             {
-                return Nil;
+                return new ErrorNode("empty array");
             }
             return VisitNode(list.Head(), env);
         }
