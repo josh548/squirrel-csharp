@@ -98,6 +98,11 @@ Returns the first element of an array.
 (head {a b c}) -> a
 ```
 
+include
+-------
+Takes one argument, the path to a module source file. Loads definitions from
+the module. Returns `null`. See [`module`](#module).
+
 join
 ----
 Concatenates a sequence of arrays into a single array.
