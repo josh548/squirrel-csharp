@@ -44,7 +44,7 @@ namespace Squirrel
 
         private static readonly INode True = new SymbolNode("true");
         private static readonly INode False = new SymbolNode("false");
-        private static readonly INode Nil = new QuotedExpressionNode(new List<INode>());
+        private static readonly INode Null = new SymbolNode("null");
 
         public Evaluator(INode root)
         {
@@ -261,13 +261,13 @@ namespace Squirrel
                 env.PutParent(name, value);
             }
 
-            return Nil;
+            return Null;
         }
 
         private static INode BuiltinDisplay(List<INode> args, Environment env)
         {
             Console.WriteLine(args[0]);
-            return Nil;
+            return Null;
         }
 
         [ExpectedTypes(typeof(IntegerNode), typeof(IntegerNode))]
@@ -358,7 +358,7 @@ namespace Squirrel
             }
             env.Parent.Extend(moduleEnv);
 
-            return Nil;
+            return Null;
         }
 
         [ExpectedType(typeof(QuotedExpressionNode))]
@@ -417,7 +417,7 @@ namespace Squirrel
 
         private static INode BuiltinModule(List<INode> args, Environment env) {
             env.Parent.Extend(env);
-            return Nil;
+            return Null;
         }
 
         [ExpectedType(typeof(IntegerNode))]
@@ -485,14 +485,14 @@ namespace Squirrel
                 env.PutGrandparent(name, value);
             }
 
-            return Nil;
+            return Null;
         }
 
         [ExpectedTypes(typeof(StringNode))]
         private static INode BuiltinPrint(List<INode> args, Environment env)
         {
             Console.Write(((StringNode) args[0]).Value);
-            return Nil;
+            return Null;
         }
 
         private static INode BuiltinQuote(List<INode> args, Environment env)

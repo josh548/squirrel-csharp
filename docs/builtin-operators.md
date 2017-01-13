@@ -25,7 +25,7 @@ def
 ---
 Takes an array of symbols followed by a sequence of values and binds the values
 to the symbols in the current scope. Bound values can be accessed from inner
-scopes, but not from outer scopes.
+scopes, but not from outer scopes. Returns `null`.
 
 ```
 (block
@@ -159,7 +159,7 @@ module
 Creates a module whose definitions can be included in other source files with
 the `include` operator. Takes a sequence of expressions. After the expressions
 are evaluated, definitions are copied from the current environment to the
-parent environment. Returns `nil`.
+parent environment. Returns `null`.
 
 ```
 [ example-module.sq ]
@@ -205,7 +205,7 @@ to symbols in the outer scope rather than the current scope.
 
 print
 -----
-Prints a string to the console.
+Prints a string to the console. Returns `null`.
 
 ```
 (print "hello world!\n")

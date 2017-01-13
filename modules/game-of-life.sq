@@ -99,7 +99,7 @@
 
     (fun {generations grid count}
         {if (eq 0 count)
-            {nil}
+            {null}
             {block
                 (print-grid grid)
                 (print "\n")
