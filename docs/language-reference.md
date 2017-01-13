@@ -8,6 +8,7 @@ Table of Contents
 - [Symbols](#symbols)
 - [Strings](#strings)
 - [Booleans](#booleans)
+- [Null](#null)
 - [Symbolic Expressions](#symbolic-expressions)
 - [Quoted Expressions](#quoted-expressions)
 - [Arrays](#arrays)
@@ -52,8 +53,13 @@ foo-bar [ a symbol with hyphens in its name ]
 
 Booleans
 --------
-The symbols named *true* and *false* act as boolean values. There is no
-distinct boolean data type.
+The symbols `true` and `false` represent boolean values. Functions that operate
+on or return boolean values should use these symbols.
+
+Null
+----
+The symbol `null` represents a meaningless value. Functions that do not
+need to return a meaningful value should return `null`.
 
 Strings
 -------
