@@ -154,6 +154,26 @@ Returns the remainder after division of two numbers.
 (mod 5 3) -> 2
 ```
 
+module
+------
+Creates a module whose definitions can be included in other source files with
+the `include` operator. Takes a sequence of expressions. After the expressions
+are evaluated, definitions are copied from the current environment to the
+parent environment. Returns `nil`.
+
+```
+[ example-module.sq ]
+(module
+    (def {square} (lambda {x} {mul x x}))
+)
+
+[ using-modules.sq ]
+(block
+    (include "example-module.sq")
+    (square 3)
+) -> 9
+```
+
 mul
 ---
 Returns the product of a sequence of numbers.

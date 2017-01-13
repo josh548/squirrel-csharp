@@ -12,6 +12,7 @@ Table of Contents
 - [Quoted Expressions](#quoted-expressions)
 - [Arrays](#arrays)
 - [Lambda Functions](#lambda-functions)
+- [Modules](#modules)
 
 Comments
 --------
@@ -126,4 +127,27 @@ s-expression followed by the arguments.
 ((lambda {x} {mul x x}) 5) [ -> 25 ]
 
 ((lambda {x y} {div (add x y) 2}) 10 20) [ -> 15 ]
+```
+
+Modules
+-------
+Modules are groups of definitions (variables and functions) residing in
+separate source files. Modules can be defined with the `module` operator.
+
+```
+[ example-module.sq ]
+(module
+    (def {square} (lambda {x} {mul x x}))
+)
+```
+
+Module definitions can be included in other source files with the `include`
+operator.
+
+```
+[ using-modules.sq ]
+(block
+    (include "example-module.sq")
+    (square 3)
+) -> 9
 ```
