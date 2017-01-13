@@ -62,11 +62,8 @@ namespace Squirrel
             return (INode) method.Invoke(null, new object[] {node, new Environment(env)});
         }
 
-        // ReSharper disable once UnusedMember.Local
-        // ReSharper disable once UnusedParameter.Local
         private static INode VisitIntegerNode(IntegerNode node, Environment env) => node;
 
-        // ReSharper disable once UnusedMember.Local
         private static INode VisitSymbolNode(SymbolNode node, Environment env)
         {
             while (true)
@@ -87,11 +84,8 @@ namespace Squirrel
             }
         }
 
-        // ReSharper disable once UnusedMember.Local
-        // ReSharper disable once UnusedParameter.Local
         private static INode VisitStringNode(StringNode node, Environment env) => node;
 
-        // ReSharper disable once UnusedMember.Local
         private static INode VisitSymbolicExpressionNode(SymbolicExpressionNode node, Environment env)
         {
             if (node.Children.Count == 0)
@@ -126,16 +120,10 @@ namespace Squirrel
             return new ErrorNode("first element of symbolic expression must be a symbol or lambda function");
         }
 
-        // ReSharper disable once UnusedMember.Local
-        // ReSharper disable once UnusedParameter.Local
         private static INode VisitQuotedExpressionNode(QuotedExpressionNode node, Environment env) => node;
 
-        // ReSharper disable once UnusedMember.Local
-        // ReSharper disable once UnusedParameter.Local
         private static INode VisitLambdaFunctionNode(LambdaFunctionNode node, Environment env) => node;
 
-        // ReSharper disable once UnusedMember.Local
-        // ReSharper disable once UnusedParameter.Local
         private static INode VisitErrorNode(ErrorNode node, Environment env) => node;
 
         private static INode EvaluateBuiltinFunction(SymbolNode head, List<INode> tail, Environment env)
