@@ -42,9 +42,9 @@ namespace Squirrel
 
         private delegate INode BuiltinFunctionDelegate(List<INode> args, Environment env);
 
-        private static readonly INode True = new SymbolNode("true");
-        private static readonly INode False = new SymbolNode("false");
-        private static readonly INode Null = new SymbolNode("null");
+        public static readonly INode True = new SymbolNode("true");
+        public static readonly INode False = new SymbolNode("false");
+        public static readonly INode Null = new SymbolNode("null");
 
         public Evaluator(INode root)
         {

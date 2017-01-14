@@ -39,7 +39,10 @@ namespace ConsoleApplication
                 Console.WriteLine(e.Message);
                 return;
             }
-            Console.WriteLine(result);
+
+            if (!result.Equals(Evaluator.Null)) {
+                Console.WriteLine(result);
+            }
         }
 
         private static void RunInteractiveConsole()
@@ -78,7 +81,10 @@ namespace ConsoleApplication
                     Console.WriteLine(e.Message);
                     continue;
                 }
-                Console.WriteLine(result);
+
+                if (!result.Equals(Evaluator.Null)) {
+                    Console.WriteLine(result);
+                }
 
                 if (result.GetType() != typeof(ErrorNode))
                 {
