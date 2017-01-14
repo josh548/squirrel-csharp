@@ -52,6 +52,12 @@ scope.
 (mul x x) -> 4
 ```
 
+display
+-------
+Prints the string representation of an object to the console, which is a string
+that, when interpreted, evaluates to an equivalent object. Returns `null`. For
+printing strings, see [`print`](#print).
+
 div
 ---
 Returns the quotient of two numbers.
