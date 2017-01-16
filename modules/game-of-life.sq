@@ -65,7 +65,7 @@
 
     (fun {coords grid}
         {block
-            (def {rows cols} (len grid) (len (head grid)))
+            (def {rows cols} (len grid) (len (first grid)))
             (foreach (range rows)
                 (lambda {row}
                     {foreach (range cols)

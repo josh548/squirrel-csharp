@@ -109,6 +109,15 @@ to the second number and `false` otherwise.
 (ge 3 2) -> true
 ```
 
+head
+----
+Takes an array and returns a slice containing only the first element of the
+array.
+
+```
+(head {a b c}) -> {a}
+```
+
 if
 --
 Takes a *condition* and two *outcomes*. The condition must evaluate to a
@@ -259,4 +268,13 @@ Returns the sum of an array of numbers.
 
 ```
 (sum {2 3 5}) -> 10
+```
+
+tail
+----
+Takes an array and returns a slice containing all but the first element of the
+array.
+
+```
+(tail {1 2 3}) -> {2 3}
 ```

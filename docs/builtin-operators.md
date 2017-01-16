@@ -96,14 +96,6 @@ second and `false` otherwise.
 (gt 1 2) -> false
 ```
 
-head
-----
-Returns the first element of an array.
-
-```
-(head {a b c}) -> a
-```
-
 include
 -------
 Takes one argument, the path to a module source file. Loads definitions from
@@ -247,14 +239,6 @@ Returns the difference of two numbers.
 
 ```
 (sub 3 2) -> 1
-```
-
-tail
-----
-Returns all but the first element of an array.
-
-```
-(tail {1 2 3}) -> {2 3}
 ```
 
 when

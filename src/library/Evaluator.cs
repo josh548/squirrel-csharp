@@ -22,7 +22,6 @@ namespace Squirrel
                 {"eq", BuiltinEq},
                 {"eval", BuiltinEval},
                 {"gt", BuiltinGt},
-                {"head", BuiltinHead},
                 {"include", BuiltinInclude},
                 {"join", BuiltinJoin},
                 {"lambda", BuiltinLambda},
@@ -37,7 +36,6 @@ namespace Squirrel
                 {"quote", BuiltinQuote},
                 {"slice", BuiltinSlice},
                 {"sub", BuiltinSub},
-                {"tail", BuiltinTail},
                 {"when", BuiltinWhen}
             };
 
@@ -308,17 +306,6 @@ namespace Squirrel
             return first > second ? True : False;
         }
 
-        [ExpectedTypes(typeof(QuotedExpressionNode))]
-        private static INode BuiltinHead(List<INode> args, Environment env)
-        {
-            var list = ((QuotedExpressionNode) args[0]).Children;
-            if (list.Count == 0)
-            {
-                return new ErrorNode("empty array");
-            }
-            return VisitNode(list.Head(), env);
-        }
-
         [ExpectedTypes(typeof(StringNode))]
         private static INode BuiltinInclude(List<INode> args, Environment env)
         {
@@ -524,13 +511,6 @@ namespace Squirrel
             var second = ((IntegerNode) args[1]).Value;
             var difference = first - second;
             return new IntegerNode(difference);
-        }
-
-        [ExpectedTypes(typeof(QuotedExpressionNode))]
-        private static INode BuiltinTail(List<INode> args, Environment env)
-        {
-            var tail = ((QuotedExpressionNode) args[0]).Children.Tail();
-            return new QuotedExpressionNode(tail);
         }
 
         [ExpectedType(typeof(QuotedExpressionNode))]

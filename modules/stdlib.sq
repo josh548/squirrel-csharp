@@ -1,11 +1,17 @@
 (module
 
+    (def {head}
+        (lambda {list} {slice list 0 1}))
+
+    (def {tail}
+        (lambda {list} {slice list 1 (len list)}))
+
     [ define a function called 'fun' to simplify defining functions
       def example: (def {name} (lambda {arguments} {body}))
       fun example: (fun {name arguments} {body}) ]
     (def {fun}
         (lambda {prototype body}
-            {outer (quote (head prototype)) (lambda (tail prototype) body)}))
+            {outer (head prototype) (lambda (tail prototype) body)}))
 
 
 
@@ -89,7 +95,7 @@
             {{}}
             {join
                 (reverse (tail list))
-                (quote (head list))}})
+                (head list)}})
 
     [ applies a function to every item in a list | (map square {1 2 3}) -> {1 4 9} ]
     (fun {map function list}
