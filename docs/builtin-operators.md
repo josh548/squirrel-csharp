@@ -230,6 +230,17 @@ Returns an array containing its arguments.
 (quote a b c) -> {a b c}
 ```
 
+slice
+-----
+Takes an array and two zero-based indices, a begin index and an end index.
+Returns a slice of the array from the begin index up to but not including the
+end index.
+
+```
+(slice {a b c} 0 1) -> {a}
+(slice {a b c} 1 3) -> {b c}
+```
+
 sub
 ---
 Returns the difference of two numbers.

@@ -35,6 +35,7 @@ namespace Squirrel
                 {"outer", BuiltinOuter},
                 {"print", BuiltinPrint},
                 {"quote", BuiltinQuote},
+                {"slice", BuiltinSlice},
                 {"sub", BuiltinSub},
                 {"tail", BuiltinTail},
                 {"when", BuiltinWhen}
@@ -486,6 +487,34 @@ namespace Squirrel
         private static INode BuiltinQuote(List<INode> args, Environment env)
         {
             return new QuotedExpressionNode(args);
+        }
+
+        [ExpectedTypes(typeof(QuotedExpressionNode), typeof(IntegerNode), typeof(IntegerNode))]
+        private static INode BuiltinSlice(List<INode> args, Environment env)
+        {
+            var elements = ((QuotedExpressionNode)args[0]).Children;
+            var begin = ((IntegerNode)args[1]).Value;
+            var end = ((IntegerNode)args[2]).Value;
+            var length = elements.Count;
+
+            if (begin < 0 || begin > length)
+            {
+                return new ErrorNode($"begin index out of range: {begin}");
+            }
+
+            if (end < 0 || end > length)
+            {
+                return new ErrorNode($"end index out of range: {end}");
+            }
+
+            if (begin > end)
+            {
+                return new ErrorNode($"end index must be greater than start index: " +
+                                     $"{nameof(begin)} = {begin}, {nameof(end)} = {end}");
+            }
+
+            var sliced = elements.GetRange(begin, (end - begin));
+            return new QuotedExpressionNode(sliced);
         }
 
         [ExpectedTypes(typeof(IntegerNode), typeof(IntegerNode))]
