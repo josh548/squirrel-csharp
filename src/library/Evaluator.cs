@@ -170,6 +170,10 @@ namespace Squirrel
                     var expectedType = expectedTypes[i];
                     var actualType = tail[i].GetType();
 
+                    if (expectedType == typeof(INode)) {
+                        continue;
+                    }
+
                     if (actualType != expectedType)
                     {
                         return new ErrorNode($"expected argument of type {expectedType} but got type {actualType}");
