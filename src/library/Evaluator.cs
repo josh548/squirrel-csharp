@@ -172,7 +172,8 @@ namespace Squirrel
                     var expectedType = expectedTypes[i];
                     var actualType = tail[i].GetType();
 
-                    if (expectedType == typeof(INode)) {
+                    if (expectedType == typeof(INode))
+                    {
                         continue;
                     }
 
@@ -257,6 +258,7 @@ namespace Squirrel
             return Null;
         }
 
+        [ExpectedTypes(typeof(INode))]
         private static INode BuiltinDisplay(List<INode> args, Environment env)
         {
             Console.WriteLine(args[0]);
@@ -278,15 +280,8 @@ namespace Squirrel
             return new IntegerNode(quotient);
         }
 
-        private static INode BuiltinEq(List<INode> args, Environment env)
-        {
-            if (args.Count < 2)
-            {
-                return new ErrorNode($"function takes exactly 2 arguments ({args.Count} given)");
-            }
-
-            return args[0].Equals(args[1]) ? True : False;
-        }
+        [ExpectedTypes(typeof(INode), typeof(INode))]
+        private static INode BuiltinEq(List<INode> args, Environment env) => args[0].Equals(args[1]) ? True : False;
 
         [ExpectedTypes(typeof(QuotedExpressionNode))]
         private static INode BuiltinEval(List<INode> args, Environment env)
