@@ -22,6 +22,7 @@ namespace Squirrel
                 {"eq", BuiltinEq},
                 {"eval", BuiltinEval},
                 {"gt", BuiltinGt},
+                {"id", BuiltinId},
                 {"include", BuiltinInclude},
                 {"join", BuiltinJoin},
                 {"lambda", BuiltinLambda},
@@ -306,6 +307,9 @@ namespace Squirrel
             var second = ((IntegerNode) args[1]).Value;
             return first > second ? True : False;
         }
+
+        [ExpectedTypes(typeof(INode))]
+        private static INode BuiltinId(List<INode> args, Environment env) => args[0];
 
         [ExpectedTypes(typeof(StringNode))]
         private static INode BuiltinInclude(List<INode> args, Environment env)

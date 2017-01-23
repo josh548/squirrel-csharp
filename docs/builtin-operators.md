@@ -96,6 +96,14 @@ second and `false` otherwise.
 (gt 1 2) -> false
 ```
 
+id
+--
+Takes a single argument and returns it. Short for *identity*.
+
+```
+(id est) -> est
+```
+
 include
 -------
 Takes one argument, the path to a module source file. Loads definitions from
