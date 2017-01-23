@@ -37,6 +37,7 @@ namespace Squirrel
                 {"set", BuiltinSet},
                 {"slice", BuiltinSlice},
                 {"sub", BuiltinSub},
+                {"unquote", BuiltinUnquote},
                 {"when", BuiltinWhen}
             };
 
@@ -549,6 +550,13 @@ namespace Squirrel
             var second = ((IntegerNode) args[1]).Value;
             var difference = first - second;
             return new IntegerNode(difference);
+        }
+
+        [ExpectedTypes(typeof(QuotedExpressionNode))]
+        private static INode BuiltinUnquote(List<INode> args, Environment env)
+        {
+            var children = ((QuotedExpressionNode) args[0]).Children;
+            return VisitNode(new SymbolicExpressionNode(children), env);
         }
 
         [ExpectedType(typeof(QuotedExpressionNode))]

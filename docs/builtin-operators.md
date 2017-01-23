@@ -256,6 +256,14 @@ Returns the difference of two numbers.
 (sub 3 2) -> 1
 ```
 
+unquote
+-------
+Evaluates a quoted expression as a symbolic expression.
+
+```
+(unquote {add 1 2}) -> (add 1 2) -> 3
+```
+
 when
 ----
 Takes a variable number of arguments called *clauses*. Each clause is an array

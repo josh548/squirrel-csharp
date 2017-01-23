@@ -42,6 +42,7 @@ namespace Tests
         [InlineData("slice", "(slice {a b c} 2 3)", "{c}")]
         [InlineData("slice", "(block (def {letters} {a b c}) (slice letters 0 (len letters)))", "{a b c}")]
         [InlineData("sub", "(sub 3 2)", "1")]
+        [InlineData("unquote", "(unquote {add 1 2})", "3")]
         [InlineData("when", "(block (def {x} 1) (when {(lt x 0) negative} {(eq x 0) zero} {(gt x 0) positive}))", "positive")]
         [InlineData("when", "(block (def {x} 1) (when {(lt x 0) negative} {(eq x 0) zero} {(eq x 1) one} {(gt x 0) positive}))", "one")]
         public void TestBuiltinOperators(string operatorName, string input, string expected)
