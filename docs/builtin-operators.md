@@ -222,6 +222,21 @@ Returns an array containing its arguments.
 (quote a b c) -> {a b c}
 ```
 
+set
+---
+Replaces an element in an array. Takes three arguments. The first argument is a
+quoted symbol that is bound to an array. The second argument is the index of
+the element to replace in the array. The third argument is the value to replace
+the element with.
+
+```
+(block
+    (def {values} {1 two 3})
+    (set {values} 1 2)
+    values
+) -> {1 2 3}
+```
+
 slice
 -----
 Takes an array and two zero-based indices, a begin index and an end index.

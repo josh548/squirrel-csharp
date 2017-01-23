@@ -36,6 +36,7 @@ namespace Tests
         [InlineData("outer", "(block (block (outer {x y} 1 2)) (add x y))", "3")]
         [InlineData("print", "(print \"hello world\\n\")", "null")]
         [InlineData("quote", "(quote a b c)", "{a b c}")]
+        [InlineData("set", "(block (def {values} {1 two 3}) (set {values} 1 2) values)", "{1 2 3}")]
         [InlineData("slice", "(slice {a b c} 0 1)", "{a}")]
         [InlineData("slice", "(slice {a b c} 1 2)", "{b}")]
         [InlineData("slice", "(slice {a b c} 2 3)", "{c}")]

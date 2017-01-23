@@ -34,6 +34,7 @@ namespace Squirrel
                 {"outer", BuiltinOuter},
                 {"print", BuiltinPrint},
                 {"quote", BuiltinQuote},
+                {"set", BuiltinSet},
                 {"slice", BuiltinSlice},
                 {"sub", BuiltinSub},
                 {"when", BuiltinWhen}
@@ -478,6 +479,39 @@ namespace Squirrel
         private static INode BuiltinQuote(List<INode> args, Environment env)
         {
             return new QuotedExpressionNode(args);
+        }
+
+        [ExpectedTypes(typeof(QuotedExpressionNode), typeof(IntegerNode), typeof(INode))]
+        private static INode BuiltinSet(List<INode> args, Environment env) {
+            var first = (QuotedExpressionNode)args[0];
+            var second = (IntegerNode)args[1];
+            var third = args[2];
+
+            if (first.Children.Count != 1) {
+                return new ErrorNode("expected singleton array");
+            }
+
+            var child = first.Children[0];
+            if (child.GetType() != typeof(SymbolNode)) {
+                return new ErrorNode("expected singleton array to contain a symbol");
+            }
+
+            var definition = env.Get(((SymbolNode)child).Value);
+            if (definition?.GetType() != typeof(QuotedExpressionNode)) {
+                return new ErrorNode("symbol must be bound to an array");
+            }
+
+            var array = (QuotedExpressionNode)definition;
+            var index = second.Value;
+            var replacement = third;
+
+            if (index < 0 || index >= array.Children.Count) {
+                return new ErrorNode("index is out of bounds");
+            }
+
+            array.Children[index] = replacement;
+
+            return Null;
         }
 
         [ExpectedTypes(typeof(QuotedExpressionNode), typeof(IntegerNode), typeof(IntegerNode))]
