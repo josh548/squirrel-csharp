@@ -63,38 +63,44 @@
         }
     )
 
-    (fun {coords grid}
+    (fun {next-generation grid}
         {block
             (def {rows cols} (len grid) (len (first grid)))
             (foreach (range rows)
                 (lambda {row}
                     {foreach (range cols)
-                        (lambda {col} {quote row col})})
+                        (lambda {col}
+                            {compute-new-value grid (quote row col)}
+                        )
+                    }
+                )
             )
-        }
-    )
-
-    (fun {next-generation grid}
-        {foreach (coords grid) (lambda {row}
-            {foreach row (lambda {point}
-                {compute-new-value grid point})})
         }
     )
 
     (fun {print-cell grid point}
         {if (eq 1 (get-cell grid point))
             {print "()"}
-            {print "  "}})
+            {print "  "}
+        }
+    )
 
     (fun {print-grid grid}
-        {foreach (coords grid) (lambda {row}
-            {block
-                (foreach row (lambda {point}
-                    {print-cell grid point}
-                ))
-                (print "\n")
-            }
-        )}
+        {block
+            (def {rows cols} (len grid) (len (first grid)))
+            (foreach (range rows)
+                (lambda {row}
+                    {block
+                        (foreach (range cols)
+                            (lambda {col}
+                                {print-cell grid (quote row col)}
+                            )
+                        )
+                        (print "\n")
+                    }
+                )
+            )
+        }
     )
 
     (fun {generations grid count}
