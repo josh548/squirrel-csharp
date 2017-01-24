@@ -12,6 +12,7 @@ Table of Contents
 - [Symbolic Expressions](#symbolic-expressions)
 - [Quoted Expressions](#quoted-expressions)
 - [Arrays](#arrays)
+- [Builtin Functions](#builtin-functions)
 - [Lambda Functions](#lambda-functions)
 - [Modules](#modules)
 
@@ -74,12 +75,12 @@ Double quotes inside a string must be escaped with a backslash.
 
 Symbolic Expressions
 --------------------
-A symbolic expression (or *s-expression*) is a parenthesized list of items. The
-first item of an s-expression must be an operator or function, and the
-remaining items are treated as its arguments.
+A symbolic expression (or *s-expression*) is a parenthesized list of items, of
+which the first item is a function, and any remaining items are treated as
+arguments.
 
 ```
-(add 1 2) [ -> 3 | operator: add, arguments: 1 2 ]
+(add 1 2) [ -> 3 | function: add, arguments: 1 2 ]
 ```
 
 The items inside an s-expression are evaluated before the s-expression itself.
@@ -91,8 +92,8 @@ The items inside an s-expression are evaluated before the s-expression itself.
 Quoted Expressions
 ------------------
 A quoted expression (or *q-expression*) is a braced list of items. A
-q-expression evaluates to itself. Q-expressions are often used to prevent the
-evaluation of certain expressions.
+q-expression evaluates to itself. Q-expressions are frequently used to prevent
+the evaluation of certain expressions.
 
 ```
 {add 1 2} [ -> {add 1 2} ]
@@ -109,11 +110,20 @@ they contain.
 {one 2 "three"} [ array containing three elements of various types ]
 ```
 
+Builtin Functions
+-----------------
+Builtin functions are functions that are implemented as part of the core of the
+language (i.e., the interpreter). Functions are invoked using *prefix*
+notation. A function call is written as a symbolic expression containing the
+name of the function followed by any arguments.
+
+For a list of builtin functions, see [here](builtin-functions.md).
+
 Lambda Functions
 ----------------
-A lambda function is an anonymous function created using the `lambda` operator.
-The `lambda` operator takes two arguments, both q-expressions. The first
-argument is an array of symbols, which serve as the names of the function
+A lambda function is an anonymous function created using the builtin `lambda`
+function. The `lambda` function takes two arguments, both q-expressions. The
+first argument is an array of symbols, which serve as the names of the function
 parameters. The second argument is the body of the function. Because the body
 of the function is a q-expression, it does not get evaluated prematurely
 before the function is called.
@@ -126,8 +136,8 @@ before the function is called.
 (lambda {x y} {div (add x y) 2})
 ```
 
-Lambda functions are invoked like operators: as the first element of an
-s-expression followed by the arguments.
+Lambda functions are invoked like builtin functions: as the first element of an
+s-expression followed by any arguments.
 
 ```
 ((lambda {x} {mul x x}) 5) [ -> 25 ]
@@ -138,7 +148,8 @@ s-expression followed by the arguments.
 Modules
 -------
 Modules are groups of definitions (variables and functions) residing in
-separate source files. Modules can be defined with the `module` operator.
+separate source files. Modules can be defined with the builtin `module`
+function.
 
 ```
 [ example-module.sq ]
@@ -147,8 +158,8 @@ separate source files. Modules can be defined with the `module` operator.
 )
 ```
 
-Module definitions can be included in other source files with the `include`
-operator.
+Module definitions can be included in other source files with the builtin
+`include` function.
 
 ```
 [ using-modules.sq ]

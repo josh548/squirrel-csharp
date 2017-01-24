@@ -86,7 +86,7 @@ first and the function comes second.
 fun
 ---
 Provides a shortcut for defining named functions compared to using the `def`
-operator. The `fun` operator takes two arguments. The first argument is the
+function. The `fun` function takes two arguments. The first argument is the
 *prototype* of the function, which is an array of symbols containing the name
 of the function followed by the names of the parameters. The second argument is
 the quoted body of the function.
@@ -94,7 +94,7 @@ the quoted body of the function.
 ```
 (fun {square x} {mul x x})
 
-[ equivalent function definition using the `def` operator ]
+[ equivalent function definition using the `def` function ]
 (def {square} (lambda {x} {mul x x}))
 ```
 

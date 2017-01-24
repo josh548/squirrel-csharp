@@ -34,5 +34,5 @@ dotnet test
 
 ## Resources
 - [Language Reference](docs/language-reference.md)
-- [List of Builtin Operators](docs/builtin-operators.md)
+- [List of Builtin Functions](docs/builtin-functions.md)
 - [List of Standard Library Functions](docs/standard-library-functions.md)

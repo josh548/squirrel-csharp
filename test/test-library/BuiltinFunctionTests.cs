@@ -4,7 +4,7 @@ using Squirrel.Nodes;
 
 namespace Tests
 {
-    public class OperatorTests
+    public class BuiltinFunctionTests
     {
         [Theory]
         [InlineData("add", "(add 1 2)", "3")]
@@ -46,7 +46,7 @@ namespace Tests
         [InlineData("unquote", "(unquote {add 1 2})", "3")]
         [InlineData("when", "(block (def {x} 1) (when {(lt x 0) negative} {(eq x 0) zero} {(gt x 0) positive}))", "positive")]
         [InlineData("when", "(block (def {x} 1) (when {(lt x 0) negative} {(eq x 0) zero} {(eq x 1) one} {(gt x 0) positive}))", "one")]
-        public void TestBuiltinOperators(string operatorName, string input, string expected)
+        public void TestBuiltinFunctions(string functionName, string input, string expected)
         {
             var actual = Evaluate(input).ToString();
             Assert.Equal(expected, actual);

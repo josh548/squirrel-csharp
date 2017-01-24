@@ -1,4 +1,4 @@
-Builtin Operators
+Builtin Functions
 =================
 
 add
@@ -128,7 +128,7 @@ argument is the body of the function.
 (lambda {x} {mul x x})
 ```
 
-Used in conjunction with the `def` operator to define named functions.
+Used in conjunction with the `def` function to define named functions.
 
 ```
 (def {factorial} (lambda {x} {
@@ -168,7 +168,7 @@ Returns the remainder after division of two numbers.
 module
 ------
 Creates a module whose definitions can be included in other source files with
-the `include` operator. Takes a sequence of expressions. After the expressions
+the `include` function. Takes a sequence of expressions. After the expressions
 are evaluated, definitions are copied from the current environment to the
 parent environment. Returns `null`.
 
@@ -203,7 +203,7 @@ Returns the nth element of an array.
 
 outer
 -----
-Similar to the `def` operator. The only difference is that `outer` binds values
+Similar to the `def` function. The only difference is that `outer` binds values
 to symbols in the outer scope rather than the current scope.
 
 ```
@@ -275,7 +275,7 @@ Evaluates a quoted expression as a symbolic expression.
 when
 ----
 Takes a variable number of arguments called *clauses*. Each clause is an array
-containing two elements, a *condition* and a *result*. The `when` operator
+containing two elements, a *condition* and a *result*. The `when` function
 returns the result of the first clause for which the condition evaluates to
 `true`.
 
