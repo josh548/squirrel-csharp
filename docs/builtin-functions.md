@@ -275,19 +275,3 @@ Evaluates a quoted expression as a symbolic expression.
 ```
 (unquote {add 1 2}) -> (add 1 2) -> 3
 ```
-
-when
-----
-Takes a variable number of arguments called *clauses*. Each clause is an array
-containing two elements, a *condition* and a *result*. The `when` function
-returns the result of the first clause for which the condition evaluates to
-`true`.
-
-```
-(def {x} (add 1 1))
-(when
-    {(eq x 1) wrong}
-    {(eq x 2) right}
-    {(eq x 3) wrong}
-) -> right
-```

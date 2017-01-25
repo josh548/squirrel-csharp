@@ -38,8 +38,7 @@ namespace Squirrel
                 {"set", BuiltinSet},
                 {"slice", BuiltinSlice},
                 {"sub", BuiltinSub},
-                {"unquote", BuiltinUnquote},
-                {"when", BuiltinWhen}
+                {"unquote", BuiltinUnquote}
             };
 
         private delegate INode BuiltinFunctionDelegate(List<INode> args, Environment env);
@@ -558,37 +557,6 @@ namespace Squirrel
         {
             var children = ((QuotedExpressionNode) args[0]).Children;
             return VisitNode(new SymbolicExpressionNode(children), env);
-        }
-
-        [ExpectedType(typeof(QuotedExpressionNode))]
-        private static INode BuiltinWhen(List<INode> args, Environment env)
-        {
-            var clauses = args.Cast<QuotedExpressionNode>().ToList();
-
-            if (clauses.Any(clause => clause.Children.Count != 2))
-            {
-                return new ErrorNode("each clause must consist of a condition and a result");
-            }
-
-            foreach (var clause in clauses)
-            {
-                var condition = clause.Children[0];
-                var outcome = VisitNode(condition, env);
-
-                if (outcome.Equals(True))
-                {
-                    return VisitNode(clause.Children[1], env);
-                }
-
-                if (outcome.Equals(False))
-                {
-                    continue;
-                }
-
-                return new ErrorNode("the outcome of a condition must resolve to either true or false");
-            }
-
-            return new ErrorNode("no condition was met");
         }
     }
 }
