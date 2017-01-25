@@ -18,6 +18,8 @@ namespace Tests
         [InlineData("gt", "(gt  0 0)", "false")]
         [InlineData("gt", "(gt +1 0)", "true")]
         [InlineData("id", "(id x)", "x")]
+        [InlineData("if", "(if (lt -1 0) {id negative} {id non-negative})", "negative")]
+        [InlineData("if", "(if (lt +1 0) {id negative} {id non-negative})", "non-negative")]
         [InlineData("join", "(join {} {})", "{}")]
         [InlineData("join", "(join {a} {b})", "{a b}")]
         [InlineData("lambda", "((lambda {x} {mul x x}) 3)", "9")]

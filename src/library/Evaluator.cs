@@ -22,6 +22,7 @@ namespace Squirrel
                 {"eq", BuiltinEq},
                 {"gt", BuiltinGt},
                 {"id", BuiltinId},
+                {"if", BuiltinIf},
                 {"include", BuiltinInclude},
                 {"join", BuiltinJoin},
                 {"lambda", BuiltinLambda},
@@ -293,6 +294,24 @@ namespace Squirrel
 
         [ExpectedTypes(typeof(INode))]
         private static INode BuiltinId(List<INode> args, Environment env) => args[0];
+
+        [ExpectedTypes(typeof(SymbolNode), typeof(QuotedExpressionNode), typeof(QuotedExpressionNode))]
+        private static INode BuiltinIf(List<INode> args, Environment env) {
+            var condition = (SymbolNode)args[0];
+            var resultIfTrue = (QuotedExpressionNode)args[1];
+            var resultIfFalse = (QuotedExpressionNode)args[2];
+            QuotedExpressionNode actualResult;
+
+            if (condition.Equals(True)) {
+                actualResult = resultIfTrue;
+            } else if (condition.Equals(False)) {
+                actualResult = resultIfFalse;
+            } else {
+                return new ErrorNode($"condition must evaluate to true or false, but evaluated to: {condition}");
+            }
+
+            return BuiltinUnquote(new List<INode> { actualResult }, env);
+        }
 
         [ExpectedTypes(typeof(StringNode))]
         private static INode BuiltinInclude(List<INode> args, Environment env)

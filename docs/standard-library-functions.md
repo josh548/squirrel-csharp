@@ -118,20 +118,6 @@ array.
 (head {a b c}) -> {a}
 ```
 
-if
---
-Takes a *condition* and two *outcomes*. The condition must evaluate to a
-boolean. The outcomes must be q-expressions. If the condition evaluates to
-`true`, the first outcome will be evaluated. If the condition evaluates to
-`false`, the second outcome will be evaluated.
-
-```
-(if (lt x 0)
-    {print "x is negative"}
-    {print "x is either positive or zero"}
-)
-```
-
 is-empty
 --------
 Takes an array and returns `true` if the array is empty and `false` otherwise.

@@ -93,6 +93,21 @@ Takes a single argument and returns it. Short for *identity*.
 (id est) -> est
 ```
 
+if
+--
+Takes three arguments, one *condition* and two *outcomes*. The condition must
+evaluate to a boolean, and the outcomes must be quoted expressions. If the
+condition evaluates to `true`, the first outcome is evaluated and its result
+is returned. If the condition evaluates to `false`, the second outcome is
+evaluated and its result is returned.
+
+```
+(if (lt 1 0)
+    {id negative}
+    {id non-negative}
+) -> non-negative
+```
+
 include
 -------
 Takes one argument, the path to a module source file. Loads definitions from
