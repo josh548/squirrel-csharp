@@ -76,17 +76,6 @@ value. The arguments can be of any data type.
 (eq 6 (add 1 2 3)) -> true
 ```
 
-eval
-----
-Takes an array. If the array contains a single element, `eval` returns that
-element. If the array contains more than one element, `eval` returns the value
-of the array evaluated as if it were an s-expression.
-
-```
-(eval {add}) -> add
-(eval {add 1 2}) -> (add 1 2) -> 3
-```
-
 gt
 --
 Takes two numbers and returns `true` if the first number is greater than the

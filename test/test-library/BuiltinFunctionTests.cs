@@ -14,8 +14,6 @@ namespace Tests
         [InlineData("display", "(display \"hello world\")", "null")]
         [InlineData("div", "(div 6 3)", "2")]
         [InlineData("eq", "(eq (add 1 2) 3)", "true")]
-        [InlineData("eval", "(eval {add})", "add")]
-        [InlineData("eval", "(eval {add 1 2})", "3")]
         [InlineData("gt", "(gt -1 0)", "false")]
         [InlineData("gt", "(gt  0 0)", "false")]
         [InlineData("gt", "(gt +1 0)", "true")]

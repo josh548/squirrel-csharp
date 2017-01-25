@@ -20,7 +20,6 @@ namespace Squirrel
                 {"display", BuiltinDisplay},
                 {"div", BuiltinDiv},
                 {"eq", BuiltinEq},
-                {"eval", BuiltinEval},
                 {"gt", BuiltinGt},
                 {"id", BuiltinId},
                 {"include", BuiltinInclude},
@@ -205,7 +204,7 @@ namespace Squirrel
                 env.Put(key, value);
             }
 
-            return BuiltinEval(new List<INode> {head.Body}, env);
+            return BuiltinUnquote(new List<INode> {head.Body}, env);
         }
 
         [ExpectedType(typeof(IntegerNode))]
@@ -283,22 +282,6 @@ namespace Squirrel
 
         [ExpectedTypes(typeof(INode), typeof(INode))]
         private static INode BuiltinEq(List<INode> args, Environment env) => args[0].Equals(args[1]) ? True : False;
-
-        [ExpectedTypes(typeof(QuotedExpressionNode))]
-        private static INode BuiltinEval(List<INode> args, Environment env)
-        {
-            var children = ((QuotedExpressionNode) args[0]).Children;
-
-            switch (children.Count)
-            {
-                case 0:
-                    return new ErrorNode("cannot evalute empty quoted expression");
-                case 1:
-                    return VisitNode(children[0], env);
-                default:
-                    return VisitNode(new SymbolicExpressionNode(children), env);
-            }
-        }
 
         [ExpectedTypes(typeof(IntegerNode), typeof(IntegerNode))]
         private static INode BuiltinGt(List<INode> args, Environment env)

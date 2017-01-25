@@ -18,9 +18,20 @@
     [ boolean and logical functions ]
 
     (fun {if condition outcome-if-true outcome-if-false}
-        {when
-            {condition (eval outcome-if-true)}
-            {true (eval outcome-if-false)}})
+        {block
+            (def {actual-outcome}
+                (when
+                    {condition outcome-if-true}
+                    {true outcome-if-false}
+                )
+            )
+            (def {outcome-is-singleton} (eq 1 (len actual-outcome)))
+            (when
+                {outcome-is-singleton (unquote (join {id} actual-outcome))}
+                {true (unquote actual-outcome)}
+            )
+        }
+    )
 
     (fun {not condition}
         {if condition
