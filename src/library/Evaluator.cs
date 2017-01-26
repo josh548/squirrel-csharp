@@ -11,8 +11,12 @@ namespace Squirrel
     {
         private readonly INode _root;
 
-        private static readonly Dictionary<string, BuiltinFunctionDelegate> BuiltinFunctions =
-            new Dictionary<string, BuiltinFunctionDelegate>
+        private delegate INode BuiltinFunctionDelegate(List<INode> args, Environment env);
+        private Dictionary<string, BuiltinFunctionDelegate> _builtinFunctions;
+
+        private void InitializeBuiltinFunctionDictionary()
+        {
+            _builtinFunctions = new Dictionary<string, BuiltinFunctionDelegate>
             {
                 {"add", BuiltinAdd},
                 {"block", BuiltinBlock},
@@ -40,8 +44,7 @@ namespace Squirrel
                 {"sub", BuiltinSub},
                 {"unquote", BuiltinUnquote}
             };
-
-        private delegate INode BuiltinFunctionDelegate(List<INode> args, Environment env);
+        }
 
         public static readonly INode True = new SymbolNode("true");
         public static readonly INode False = new SymbolNode("false");
@@ -50,22 +53,23 @@ namespace Squirrel
         public Evaluator(INode root)
         {
             _root = root;
+            InitializeBuiltinFunctionDictionary();
         }
 
         public INode Evaluate() => VisitNode(_root, new Environment());
 
         public INode Evaluate(ref Environment env) => VisitNode(_root, env);
 
-        private static INode VisitNode(INode node, Environment env)
+        private INode VisitNode(INode node, Environment env)
         {
             var methodName = $"Visit{node.GetType().Name}";
-            var method = typeof(Evaluator).GetTypeInfo().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static);
-            return (INode) method.Invoke(null, new object[] {node, new Environment(env)});
+            var method = GetType().GetTypeInfo().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+            return (INode)method.Invoke(this, new object[] { node, new Environment(env) });
         }
 
-        private static INode VisitIntegerNode(IntegerNode node, Environment env) => node;
+        private INode VisitIntegerNode(IntegerNode node, Environment env) => node;
 
-        private static INode VisitSymbolNode(SymbolNode node, Environment env)
+        private INode VisitSymbolNode(SymbolNode node, Environment env)
         {
             while (true)
             {
@@ -85,9 +89,9 @@ namespace Squirrel
             }
         }
 
-        private static INode VisitStringNode(StringNode node, Environment env) => node;
+        private INode VisitStringNode(StringNode node, Environment env) => node;
 
-        private static INode VisitSymbolicExpressionNode(SymbolicExpressionNode node, Environment env)
+        private INode VisitSymbolicExpressionNode(SymbolicExpressionNode node, Environment env)
         {
             if (node.Children.Count == 0)
             {
@@ -121,22 +125,22 @@ namespace Squirrel
             return new ErrorNode("first element of symbolic expression must be a symbol or lambda function");
         }
 
-        private static INode VisitQuotedExpressionNode(QuotedExpressionNode node, Environment env) => node;
+        private INode VisitQuotedExpressionNode(QuotedExpressionNode node, Environment env) => node;
 
-        private static INode VisitLambdaFunctionNode(LambdaFunctionNode node, Environment env) => node;
+        private INode VisitLambdaFunctionNode(LambdaFunctionNode node, Environment env) => node;
 
-        private static INode VisitErrorNode(ErrorNode node, Environment env) => node;
+        private INode VisitErrorNode(ErrorNode node, Environment env) => node;
 
-        private static INode EvaluateBuiltinFunction(SymbolNode head, List<INode> tail, Environment env)
+        private INode EvaluateBuiltinFunction(SymbolNode head, List<INode> tail, Environment env)
         {
             var functionName = head.Value;
 
-            if (!BuiltinFunctions.ContainsKey(functionName))
+            if (!_builtinFunctions.ContainsKey(functionName))
             {
                 return new ErrorNode($"function is not defined: {functionName}");
             }
 
-            var function = BuiltinFunctions[functionName];
+            var function = _builtinFunctions[functionName];
 
             var expectedTypeAttr = function.GetMethodInfo().GetCustomAttribute<ExpectedTypeAttribute>();
 
@@ -187,7 +191,7 @@ namespace Squirrel
             return function.Invoke(tail, env);
         }
 
-        private static INode EvaluateLambdaFunction(LambdaFunctionNode head, List<INode> tail, Environment env)
+        private INode EvaluateLambdaFunction(LambdaFunctionNode head, List<INode> tail, Environment env)
         {
             var expectedCount = head.Parameters.Children.Count;
             var actualCount = tail.Count;
@@ -208,7 +212,7 @@ namespace Squirrel
         }
 
         [ExpectedType(typeof(IntegerNode))]
-        private static INode BuiltinAdd(List<INode> args, Environment env)
+        private INode BuiltinAdd(List<INode> args, Environment env)
         {
             if (args.Count < 2)
             {
@@ -218,9 +222,9 @@ namespace Squirrel
             return new IntegerNode(sum);
         }
 
-        private static INode BuiltinBlock(List<INode> args, Environment env) => args[args.Count - 1];
+        private INode BuiltinBlock(List<INode> args, Environment env) => args[args.Count - 1];
 
-        private static INode BuiltinDef(List<INode> args, Environment env)
+        private INode BuiltinDef(List<INode> args, Environment env)
         {
             if (args.Count < 2)
             {
@@ -247,7 +251,7 @@ namespace Squirrel
                 var name = ((SymbolNode) names[i]).Value;
                 var value = values[i];
 
-                if (BuiltinFunctions.ContainsKey(name))
+                if (_builtinFunctions.ContainsKey(name))
                 {
                     return new ErrorNode($"cannot redefine builtin function: {name}");
                 }
@@ -259,14 +263,14 @@ namespace Squirrel
         }
 
         [ExpectedTypes(typeof(INode))]
-        private static INode BuiltinDisplay(List<INode> args, Environment env)
+        private INode BuiltinDisplay(List<INode> args, Environment env)
         {
             Console.WriteLine(args[0]);
             return Null;
         }
 
         [ExpectedTypes(typeof(IntegerNode), typeof(IntegerNode))]
-        private static INode BuiltinDiv(List<INode> args, Environment env)
+        private INode BuiltinDiv(List<INode> args, Environment env)
         {
             var first = ((IntegerNode) args[0]).Value;
             var second = ((IntegerNode) args[1]).Value;
@@ -281,10 +285,10 @@ namespace Squirrel
         }
 
         [ExpectedTypes(typeof(INode), typeof(INode))]
-        private static INode BuiltinEq(List<INode> args, Environment env) => args[0].Equals(args[1]) ? True : False;
+        private INode BuiltinEq(List<INode> args, Environment env) => args[0].Equals(args[1]) ? True : False;
 
         [ExpectedTypes(typeof(IntegerNode), typeof(IntegerNode))]
-        private static INode BuiltinGt(List<INode> args, Environment env)
+        private INode BuiltinGt(List<INode> args, Environment env)
         {
             var first = ((IntegerNode) args[0]).Value;
             var second = ((IntegerNode) args[1]).Value;
@@ -292,10 +296,10 @@ namespace Squirrel
         }
 
         [ExpectedTypes(typeof(INode))]
-        private static INode BuiltinId(List<INode> args, Environment env) => args[0];
+        private INode BuiltinId(List<INode> args, Environment env) => args[0];
 
         [ExpectedTypes(typeof(SymbolNode), typeof(QuotedExpressionNode), typeof(QuotedExpressionNode))]
-        private static INode BuiltinIf(List<INode> args, Environment env) {
+        private INode BuiltinIf(List<INode> args, Environment env) {
             var condition = (SymbolNode)args[0];
             var resultIfTrue = (QuotedExpressionNode)args[1];
             var resultIfFalse = (QuotedExpressionNode)args[2];
@@ -313,7 +317,7 @@ namespace Squirrel
         }
 
         [ExpectedTypes(typeof(StringNode))]
-        private static INode BuiltinInclude(List<INode> args, Environment env)
+        private INode BuiltinInclude(List<INode> args, Environment env)
         {
             var modulePath = ((StringNode) args[0]).Value;
 
@@ -344,7 +348,7 @@ namespace Squirrel
         }
 
         [ExpectedType(typeof(QuotedExpressionNode))]
-        private static INode BuiltinJoin(List<INode> args, Environment env)
+        private INode BuiltinJoin(List<INode> args, Environment env)
         {
             var joined = new List<INode>();
             foreach (var arg in args)
@@ -355,7 +359,7 @@ namespace Squirrel
         }
 
         [ExpectedTypes(typeof(QuotedExpressionNode), typeof(QuotedExpressionNode))]
-        private static INode BuiltinLambda(List<INode> args, Environment env)
+        private INode BuiltinLambda(List<INode> args, Environment env)
         {
             var parameters = (QuotedExpressionNode) args[0];
             if (parameters.Children.Any(node => !(node is SymbolNode)))
@@ -369,13 +373,13 @@ namespace Squirrel
         }
 
         [ExpectedTypes(typeof(QuotedExpressionNode))]
-        private static INode BuiltinLen(List<INode> args, Environment env)
+        private INode BuiltinLen(List<INode> args, Environment env)
         {
             return new IntegerNode(((QuotedExpressionNode) args[0]).Children.Count);
         }
 
         [ExpectedTypes(typeof(IntegerNode), typeof(IntegerNode))]
-        private static INode BuiltinLt(List<INode> args, Environment env)
+        private INode BuiltinLt(List<INode> args, Environment env)
         {
             var first = ((IntegerNode) args[0]).Value;
             var second = ((IntegerNode) args[1]).Value;
@@ -383,7 +387,7 @@ namespace Squirrel
         }
 
         [ExpectedTypes(typeof(IntegerNode), typeof(IntegerNode))]
-        private static INode BuiltinMod(List<INode> args, Environment env)
+        private INode BuiltinMod(List<INode> args, Environment env)
         {
             var first = ((IntegerNode) args[0]).Value;
             var second = ((IntegerNode) args[1]).Value;
@@ -397,13 +401,13 @@ namespace Squirrel
             return new IntegerNode(remainder);
         }
 
-        private static INode BuiltinModule(List<INode> args, Environment env) {
+        private INode BuiltinModule(List<INode> args, Environment env) {
             env.Parent.Extend(env);
             return Null;
         }
 
         [ExpectedType(typeof(IntegerNode))]
-        private static INode BuiltinMul(List<INode> args, Environment env)
+        private INode BuiltinMul(List<INode> args, Environment env)
         {
             if (args.Count < 2)
             {
@@ -414,7 +418,7 @@ namespace Squirrel
         }
 
         [ExpectedTypes(typeof(QuotedExpressionNode), typeof(IntegerNode))]
-        private static INode BuiltinNth(List<INode> args, Environment env)
+        private INode BuiltinNth(List<INode> args, Environment env)
         {
             var list = ((QuotedExpressionNode) args[0]).Children;
             var n = ((IntegerNode) args[1]).Value;
@@ -432,7 +436,7 @@ namespace Squirrel
             return list[n - 1];
         }
 
-        private static INode BuiltinOuter(List<INode> args, Environment env)
+        private INode BuiltinOuter(List<INode> args, Environment env)
         {
             if (args.Count < 2)
             {
@@ -459,7 +463,7 @@ namespace Squirrel
                 var name = ((SymbolNode) names[i]).Value;
                 var value = values[i];
 
-                if (BuiltinFunctions.ContainsKey(name))
+                if (_builtinFunctions.ContainsKey(name))
                 {
                     return new ErrorNode($"cannot redefine builtin function: {name}");
                 }
@@ -471,19 +475,19 @@ namespace Squirrel
         }
 
         [ExpectedTypes(typeof(StringNode))]
-        private static INode BuiltinPrint(List<INode> args, Environment env)
+        private INode BuiltinPrint(List<INode> args, Environment env)
         {
             Console.Write(((StringNode) args[0]).Value);
             return Null;
         }
 
-        private static INode BuiltinQuote(List<INode> args, Environment env)
+        private INode BuiltinQuote(List<INode> args, Environment env)
         {
             return new QuotedExpressionNode(args);
         }
 
         [ExpectedTypes(typeof(QuotedExpressionNode), typeof(IntegerNode), typeof(INode))]
-        private static INode BuiltinSet(List<INode> args, Environment env) {
+        private INode BuiltinSet(List<INode> args, Environment env) {
             var first = (QuotedExpressionNode)args[0];
             var second = (IntegerNode)args[1];
             var third = args[2];
@@ -516,7 +520,7 @@ namespace Squirrel
         }
 
         [ExpectedTypes(typeof(QuotedExpressionNode), typeof(IntegerNode), typeof(IntegerNode))]
-        private static INode BuiltinSlice(List<INode> args, Environment env)
+        private INode BuiltinSlice(List<INode> args, Environment env)
         {
             var elements = ((QuotedExpressionNode)args[0]).Children;
             var begin = ((IntegerNode)args[1]).Value;
@@ -544,7 +548,7 @@ namespace Squirrel
         }
 
         [ExpectedTypes(typeof(IntegerNode), typeof(IntegerNode))]
-        private static INode BuiltinSub(List<INode> args, Environment env)
+        private INode BuiltinSub(List<INode> args, Environment env)
         {
             var first = ((IntegerNode) args[0]).Value;
             var second = ((IntegerNode) args[1]).Value;
@@ -553,7 +557,7 @@ namespace Squirrel
         }
 
         [ExpectedTypes(typeof(QuotedExpressionNode))]
-        private static INode BuiltinUnquote(List<INode> args, Environment env)
+        private INode BuiltinUnquote(List<INode> args, Environment env)
         {
             var children = ((QuotedExpressionNode) args[0]).Children;
             return VisitNode(new SymbolicExpressionNode(children), env);
