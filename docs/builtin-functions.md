@@ -110,8 +110,12 @@ evaluated and its result is returned.
 
 include
 -------
-Takes one argument, the path to a module source file. Loads definitions from
-the module. Returns `null`. See [`module`](#module).
+Takes the name of a module as a string, which is the name of the file in which
+the module resides, but without the *.sq* extension. The interpreter searches
+for the module in a list of directories specified with the `-i | --include`
+command line option. If the module is found, the definitions from the module
+are copied into the current environment. The `include` function returns `null`.
+See also [`module`](#module).
 
 join
 ----
@@ -174,7 +178,7 @@ module
 Creates a module whose definitions can be included in other source files with
 the `include` function. Takes a sequence of expressions. After the expressions
 are evaluated, definitions are copied from the current environment to the
-parent environment. Returns `null`.
+parent environment. Returns `null`. See also [`include`](#include).
 
 ```
 [ example-module.sq ]

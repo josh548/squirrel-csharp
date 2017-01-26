@@ -1,5 +1,5 @@
 (module
-    (include "stdlib.sq")
+    (include "stdlib")
 
     (def {octagon} {
         {0 0 0 1 1 0 0 0}

@@ -159,12 +159,14 @@ function.
 ```
 
 Module definitions can be included in other source files with the builtin
-`include` function.
+`include` function, which takes the name of the module as a string, but without
+the *.sq* extension. The interpreter searches for the module in a list of
+directories specified with the `-i | --include` command line option.
 
 ```
 [ using-modules.sq ]
 (block
-    (include "example-module.sq")
+    (include "example-module")
     (square 3)
 ) -> 9
 ```
