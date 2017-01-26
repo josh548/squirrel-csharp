@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Microsoft.Extensions.CommandLineUtils;
 using Squirrel;
 using Squirrel.Exceptions;
 using Squirrel.Nodes;
@@ -10,14 +11,31 @@ namespace ConsoleApplication
     {
         public static void Main(string[] args)
         {
-            if (args.Length == 0)
+            var app = new CommandLineApplication();
+
+            var file = app.Argument(
+                name: "file",
+                description: "source file to run",
+                multipleValues: false
+            );
+
+            app.HelpOption("-h | --help");
+
+            app.OnExecute(() =>
             {
-                RunInteractiveConsole();
-            }
-            else
-            {
-                RunFile(args[0]);
-            }
+                if (string.IsNullOrEmpty(file.Value))
+                {
+                    RunInteractiveConsole();
+                }
+                else
+                {
+                    RunFile(file.Value);
+                }
+
+                return 0;
+            });
+
+            app.Execute(args);
         }
 
         private static void RunFile(string path)
