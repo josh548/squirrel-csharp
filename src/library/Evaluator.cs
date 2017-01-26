@@ -87,7 +87,7 @@ namespace Squirrel
                     return nullable;
                 }
 
-                node = (SymbolNode) nullable;
+                node = (SymbolNode)nullable;
             }
         }
 
@@ -116,12 +116,12 @@ namespace Squirrel
 
             if (head.GetType() == typeof(SymbolNode))
             {
-                return EvaluateBuiltinFunction((SymbolNode) head, tail, env);
+                return EvaluateBuiltinFunction((SymbolNode)head, tail, env);
             }
 
             if (head.GetType() == typeof(LambdaFunctionNode))
             {
-                return EvaluateLambdaFunction((LambdaFunctionNode) head, tail, env);
+                return EvaluateLambdaFunction((LambdaFunctionNode)head, tail, env);
             }
 
             return new ErrorNode("first element of symbolic expression must be a symbol or lambda function");
@@ -205,12 +205,12 @@ namespace Squirrel
 
             for (var i = 0; i < expectedCount; i++)
             {
-                var key = ((SymbolNode) head.Parameters.Children[i]).Value;
+                var key = ((SymbolNode)head.Parameters.Children[i]).Value;
                 var value = tail[i];
                 env.Put(key, value);
             }
 
-            return BuiltinUnquote(new List<INode> {head.Body}, env);
+            return BuiltinUnquote(new List<INode> { head.Body }, env);
         }
 
         [ExpectedType(typeof(IntegerNode))]
@@ -220,7 +220,7 @@ namespace Squirrel
             {
                 return new ErrorNode($"function takes at least 2 arguments ({args.Count} given)");
             }
-            var sum = args.Sum(arg => ((IntegerNode) arg).Value);
+            var sum = args.Sum(arg => ((IntegerNode)arg).Value);
             return new IntegerNode(sum);
         }
 
@@ -233,7 +233,7 @@ namespace Squirrel
                 return new ErrorNode($"function takes at least 2 arguments ({args.Count} given)");
             }
 
-            var names = ((QuotedExpressionNode) (args.Head())).Children;
+            var names = ((QuotedExpressionNode)(args.Head())).Children;
 
             if (names.Any(name => name.GetType() != typeof(SymbolNode)))
             {
@@ -250,7 +250,7 @@ namespace Squirrel
 
             for (var i = 0; i < names.Count; i++)
             {
-                var name = ((SymbolNode) names[i]).Value;
+                var name = ((SymbolNode)names[i]).Value;
                 var value = values[i];
 
                 if (_builtinFunctions.ContainsKey(name))
@@ -274,8 +274,8 @@ namespace Squirrel
         [ExpectedTypes(typeof(IntegerNode), typeof(IntegerNode))]
         private INode BuiltinDiv(List<INode> args, Environment env)
         {
-            var first = ((IntegerNode) args[0]).Value;
-            var second = ((IntegerNode) args[1]).Value;
+            var first = ((IntegerNode)args[0]).Value;
+            var second = ((IntegerNode)args[1]).Value;
 
             if (second == 0)
             {
@@ -292,8 +292,8 @@ namespace Squirrel
         [ExpectedTypes(typeof(IntegerNode), typeof(IntegerNode))]
         private INode BuiltinGt(List<INode> args, Environment env)
         {
-            var first = ((IntegerNode) args[0]).Value;
-            var second = ((IntegerNode) args[1]).Value;
+            var first = ((IntegerNode)args[0]).Value;
+            var second = ((IntegerNode)args[1]).Value;
             return first > second ? True : False;
         }
 
@@ -301,17 +301,23 @@ namespace Squirrel
         private INode BuiltinId(List<INode> args, Environment env) => args[0];
 
         [ExpectedTypes(typeof(SymbolNode), typeof(QuotedExpressionNode), typeof(QuotedExpressionNode))]
-        private INode BuiltinIf(List<INode> args, Environment env) {
+        private INode BuiltinIf(List<INode> args, Environment env)
+        {
             var condition = (SymbolNode)args[0];
             var resultIfTrue = (QuotedExpressionNode)args[1];
             var resultIfFalse = (QuotedExpressionNode)args[2];
             QuotedExpressionNode actualResult;
 
-            if (condition.Equals(True)) {
+            if (condition.Equals(True))
+            {
                 actualResult = resultIfTrue;
-            } else if (condition.Equals(False)) {
+            }
+            else if (condition.Equals(False))
+            {
                 actualResult = resultIfFalse;
-            } else {
+            }
+            else
+            {
                 return new ErrorNode($"condition must evaluate to true or false, but evaluated to: {condition}");
             }
 
@@ -361,7 +367,7 @@ namespace Squirrel
             var joined = new List<INode>();
             foreach (var arg in args)
             {
-                joined.AddRange(((QuotedExpressionNode) arg).Children);
+                joined.AddRange(((QuotedExpressionNode)arg).Children);
             }
             return new QuotedExpressionNode(joined);
         }
@@ -369,13 +375,13 @@ namespace Squirrel
         [ExpectedTypes(typeof(QuotedExpressionNode), typeof(QuotedExpressionNode))]
         private INode BuiltinLambda(List<INode> args, Environment env)
         {
-            var parameters = (QuotedExpressionNode) args[0];
+            var parameters = (QuotedExpressionNode)args[0];
             if (parameters.Children.Any(node => !(node is SymbolNode)))
             {
                 return new ErrorNode("list of lambda function parameters must contain only symbols");
             }
 
-            var body = (QuotedExpressionNode) args[1];
+            var body = (QuotedExpressionNode)args[1];
 
             return new LambdaFunctionNode(parameters, body);
         }
@@ -383,22 +389,22 @@ namespace Squirrel
         [ExpectedTypes(typeof(QuotedExpressionNode))]
         private INode BuiltinLen(List<INode> args, Environment env)
         {
-            return new IntegerNode(((QuotedExpressionNode) args[0]).Children.Count);
+            return new IntegerNode(((QuotedExpressionNode)args[0]).Children.Count);
         }
 
         [ExpectedTypes(typeof(IntegerNode), typeof(IntegerNode))]
         private INode BuiltinLt(List<INode> args, Environment env)
         {
-            var first = ((IntegerNode) args[0]).Value;
-            var second = ((IntegerNode) args[1]).Value;
+            var first = ((IntegerNode)args[0]).Value;
+            var second = ((IntegerNode)args[1]).Value;
             return first < second ? True : False;
         }
 
         [ExpectedTypes(typeof(IntegerNode), typeof(IntegerNode))]
         private INode BuiltinMod(List<INode> args, Environment env)
         {
-            var first = ((IntegerNode) args[0]).Value;
-            var second = ((IntegerNode) args[1]).Value;
+            var first = ((IntegerNode)args[0]).Value;
+            var second = ((IntegerNode)args[1]).Value;
 
             if (second == 0)
             {
@@ -409,7 +415,8 @@ namespace Squirrel
             return new IntegerNode(remainder);
         }
 
-        private INode BuiltinModule(List<INode> args, Environment env) {
+        private INode BuiltinModule(List<INode> args, Environment env)
+        {
             env.Parent.Extend(env);
             return Null;
         }
@@ -421,15 +428,15 @@ namespace Squirrel
             {
                 return new ErrorNode($"function takes exactly 2 arguments ({args.Count} given)");
             }
-            var product = args.Aggregate(1, (current, arg) => current * ((IntegerNode) arg).Value);
+            var product = args.Aggregate(1, (current, arg) => current * ((IntegerNode)arg).Value);
             return new IntegerNode(product);
         }
 
         [ExpectedTypes(typeof(QuotedExpressionNode), typeof(IntegerNode))]
         private INode BuiltinNth(List<INode> args, Environment env)
         {
-            var list = ((QuotedExpressionNode) args[0]).Children;
-            var n = ((IntegerNode) args[1]).Value;
+            var list = ((QuotedExpressionNode)args[0]).Children;
+            var n = ((IntegerNode)args[1]).Value;
 
             if (n < 1)
             {
@@ -451,7 +458,7 @@ namespace Squirrel
                 return new ErrorNode($"function takes at least 2 arguments ({args.Count} given)");
             }
 
-            var names = ((QuotedExpressionNode) (args.Head())).Children;
+            var names = ((QuotedExpressionNode)(args.Head())).Children;
 
             if (names.Any(name => name.GetType() != typeof(SymbolNode)))
             {
@@ -468,7 +475,7 @@ namespace Squirrel
 
             for (var i = 0; i < names.Count; i++)
             {
-                var name = ((SymbolNode) names[i]).Value;
+                var name = ((SymbolNode)names[i]).Value;
                 var value = values[i];
 
                 if (_builtinFunctions.ContainsKey(name))
@@ -485,7 +492,7 @@ namespace Squirrel
         [ExpectedTypes(typeof(StringNode))]
         private INode BuiltinPrint(List<INode> args, Environment env)
         {
-            Console.Write(((StringNode) args[0]).Value);
+            Console.Write(((StringNode)args[0]).Value);
             return Null;
         }
 
@@ -495,22 +502,26 @@ namespace Squirrel
         }
 
         [ExpectedTypes(typeof(QuotedExpressionNode), typeof(IntegerNode), typeof(INode))]
-        private INode BuiltinSet(List<INode> args, Environment env) {
+        private INode BuiltinSet(List<INode> args, Environment env)
+        {
             var first = (QuotedExpressionNode)args[0];
             var second = (IntegerNode)args[1];
             var third = args[2];
 
-            if (first.Children.Count != 1) {
+            if (first.Children.Count != 1)
+            {
                 return new ErrorNode("expected singleton array");
             }
 
             var child = first.Children[0];
-            if (child.GetType() != typeof(SymbolNode)) {
+            if (child.GetType() != typeof(SymbolNode))
+            {
                 return new ErrorNode("expected singleton array to contain a symbol");
             }
 
             var definition = env.Get(((SymbolNode)child).Value);
-            if (definition?.GetType() != typeof(QuotedExpressionNode)) {
+            if (definition?.GetType() != typeof(QuotedExpressionNode))
+            {
                 return new ErrorNode("symbol must be bound to an array");
             }
 
@@ -518,7 +529,8 @@ namespace Squirrel
             var index = second.Value;
             var replacement = third;
 
-            if (index < 0 || index >= array.Children.Count) {
+            if (index < 0 || index >= array.Children.Count)
+            {
                 return new ErrorNode("index is out of bounds");
             }
 
@@ -558,8 +570,8 @@ namespace Squirrel
         [ExpectedTypes(typeof(IntegerNode), typeof(IntegerNode))]
         private INode BuiltinSub(List<INode> args, Environment env)
         {
-            var first = ((IntegerNode) args[0]).Value;
-            var second = ((IntegerNode) args[1]).Value;
+            var first = ((IntegerNode)args[0]).Value;
+            var second = ((IntegerNode)args[1]).Value;
             var difference = first - second;
             return new IntegerNode(difference);
         }
@@ -567,7 +579,7 @@ namespace Squirrel
         [ExpectedTypes(typeof(QuotedExpressionNode))]
         private INode BuiltinUnquote(List<INode> args, Environment env)
         {
-            var children = ((QuotedExpressionNode) args[0]).Children;
+            var children = ((QuotedExpressionNode)args[0]).Children;
             return VisitNode(new SymbolicExpressionNode(children), env);
         }
     }

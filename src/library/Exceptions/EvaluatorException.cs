@@ -2,7 +2,7 @@
 
 namespace Squirrel.Exceptions
 {
-    public class EvaluatorException: Exception
+    public class EvaluatorException : Exception
     {
         public EvaluatorException()
         {

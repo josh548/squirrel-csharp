@@ -2,7 +2,7 @@
 
 namespace Squirrel.Exceptions
 {
-    public class TokenizerException: Exception
+    public class TokenizerException : Exception
     {
         public TokenizerException()
         {

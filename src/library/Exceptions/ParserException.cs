@@ -2,7 +2,7 @@
 
 namespace Squirrel.Exceptions
 {
-    public class ParserException: Exception
+    public class ParserException : Exception
     {
         public ParserException()
         {
