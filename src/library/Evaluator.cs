@@ -321,16 +321,22 @@ namespace Squirrel
         [ExpectedTypes(typeof(StringNode))]
         private INode BuiltinInclude(List<INode> args, Environment env)
         {
-            var modulePath = ((StringNode) args[0]).Value;
+            var moduleName = ((StringNode)args[0]).Value;
 
-            string input;
-            try
+            string input = null;
+            foreach (var dir in _includeDirs)
             {
-                input = File.ReadAllText(modulePath);
+                var path = Path.Combine(dir, moduleName + ".sq");
+                if (File.Exists(path))
+                {
+                    input = File.ReadAllText(path);
+                    break;
+                }
             }
-            catch (FileNotFoundException)
+
+            if (string.IsNullOrWhiteSpace(input))
             {
-                return new ErrorNode($"module not found: {modulePath}");
+                return new ErrorNode($"module not found: {moduleName}");
             }
 
             var tokenizer = new Tokenizer(input);
