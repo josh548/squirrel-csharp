@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.CommandLineUtils;
 using Squirrel;
@@ -13,6 +14,12 @@ namespace ConsoleApplication
         {
             var app = new CommandLineApplication();
 
+            var include = app.Option(
+                template: "-i | --include <directory>",
+                description: "add the directory to the list of directories to be searched for modules",
+                optionType: CommandOptionType.MultipleValue
+            );
+
             var file = app.Argument(
                 name: "file",
                 description: "source file to run",
@@ -23,13 +30,15 @@ namespace ConsoleApplication
 
             app.OnExecute(() =>
             {
+                var includeDirs = include.HasValue() ? include.Values : new List<string>();
+
                 if (string.IsNullOrEmpty(file.Value))
                 {
-                    RunInteractiveConsole();
+                    RunInteractiveConsole(includeDirs);
                 }
                 else
                 {
-                    RunFile(file.Value);
+                    RunFile(file.Value, includeDirs);
                 }
 
                 return 0;
@@ -38,14 +47,14 @@ namespace ConsoleApplication
             app.Execute(args);
         }
 
-        private static void RunFile(string path)
+        private static void RunFile(string path, List<string> includeDirs)
         {
             var text = File.ReadAllText(path);
             var env = new Squirrel.Environment();
             INode result;
             try
             {
-                result = Interpret(text, ref env);
+                result = Interpret(text, ref env, includeDirs);
             }
             catch (TokenizerException e)
             {
@@ -58,12 +67,13 @@ namespace ConsoleApplication
                 return;
             }
 
-            if (!result.Equals(Evaluator.Null)) {
+            if (!result.Equals(Evaluator.Null))
+            {
                 Console.WriteLine(result);
             }
         }
 
-        private static void RunInteractiveConsole()
+        private static void RunInteractiveConsole(List<string> includeDirs)
         {
             var env = new Squirrel.Environment();
 
@@ -87,7 +97,7 @@ namespace ConsoleApplication
                 INode result;
                 try
                 {
-                    result = Interpret(line, ref env);
+                    result = Interpret(line, ref env, includeDirs);
                 }
                 catch (TokenizerException e)
                 {
@@ -100,7 +110,8 @@ namespace ConsoleApplication
                     continue;
                 }
 
-                if (!result.Equals(Evaluator.Null)) {
+                if (!result.Equals(Evaluator.Null))
+                {
                     Console.WriteLine(result);
                 }
 
@@ -111,11 +122,11 @@ namespace ConsoleApplication
             }
         }
 
-        private static INode Interpret(string text, ref Squirrel.Environment env)
+        private static INode Interpret(string text, ref Squirrel.Environment env, List<string> includeDirs)
         {
             var tokenizer = new Tokenizer(text);
             var parser = new Parser(tokenizer.Tokenize());
-            var evaluator = new Evaluator(parser.Parse());
+            var evaluator = new Evaluator(parser.Parse(), includeDirs);
             return evaluator.Evaluate(ref env);
         }
     }

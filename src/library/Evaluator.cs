@@ -10,6 +10,7 @@ namespace Squirrel
     public class Evaluator
     {
         private readonly INode _root;
+        private readonly List<string> _includeDirs;
 
         private delegate INode BuiltinFunctionDelegate(List<INode> args, Environment env);
         private Dictionary<string, BuiltinFunctionDelegate> _builtinFunctions;
@@ -50,9 +51,10 @@ namespace Squirrel
         public static readonly INode False = new SymbolNode("false");
         public static readonly INode Null = new SymbolNode("null");
 
-        public Evaluator(INode root)
+        public Evaluator(INode root, List<string> includeDirs)
         {
             _root = root;
+            _includeDirs = includeDirs;
             InitializeBuiltinFunctionDictionary();
         }
 
@@ -334,7 +336,7 @@ namespace Squirrel
             var tokenizer = new Tokenizer(input);
             var tokens = tokenizer.Tokenize();
             var parser = new Parser(tokens);
-            var evaluator = new Evaluator(parser.Parse());
+            var evaluator = new Evaluator(parser.Parse(), _includeDirs);
 
             var moduleEnv = new Environment();
             var result = evaluator.Evaluate(ref moduleEnv);
