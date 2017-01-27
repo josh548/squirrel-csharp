@@ -121,7 +121,7 @@
             {id {}}
             {join
                 (if (function (first list))
-                    {quote item}
+                    {head list}
                     {id {}})
                 (filter function (tail list))}})
 
