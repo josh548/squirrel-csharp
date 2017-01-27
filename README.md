@@ -41,6 +41,9 @@ dotnet run
 
 # run a Squirrel source file
 dotnet run <path>
+
+# run one of the included modules: Conway's Game of Life
+dotnet run ../../modules/game-of-life.sq
 ```
 
 ## Testing
