@@ -16,7 +16,9 @@ namespace ConsoleApplication
 
             var include = app.Option(
                 template: "-i | --include <directory>",
-                description: "add the directory to the list of directories to be searched for modules",
+                description: "add the directory to the list of directories to be searched for " +
+                             "modules, which includes by default the current directory as well " +
+                             "as the directory of the file argument, if provided",
                 optionType: CommandOptionType.MultipleValue
             );
 
@@ -31,6 +33,7 @@ namespace ConsoleApplication
             app.OnExecute(() =>
             {
                 var includeDirs = include.HasValue() ? include.Values : new List<string>();
+                includeDirs.Add(Directory.GetCurrentDirectory());
 
                 if (string.IsNullOrEmpty(file.Value))
                 {
@@ -38,6 +41,7 @@ namespace ConsoleApplication
                 }
                 else
                 {
+                    includeDirs.Add(Path.GetDirectoryName(Path.GetFullPath(file.Value)));
                     RunFile(file.Value, includeDirs);
                 }
 
