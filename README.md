@@ -1,5 +1,5 @@
 # Squirrel
-Squirrel is an interpreted programming language inspired by Lisp.
+Squirrel is an expression-oriented programming language inspired by Lisp.
 
 Check out the [language reference](docs/language-reference.md) to learn how it
 works.
@@ -10,15 +10,15 @@ works.
 [ program that defines a function,
   invokes it, and displays the result ]
 (block
-    (def {factorial}
-        (lambda {x}
-            {if (eq x 0)
-                {id 1}
-                {mul x (factorial (sub x 1))}
-            }
-        )
+  (def {factorial}
+    (lambda {x}
+      {if (eq x 0)
+        {id 1}
+        {mul x (factorial (sub x 1))}
+      }
     )
-    (display (factorial 5)) [ prints 120 ]
+  )
+  (display (factorial 5)) [ prints 120 ]
 )
 ```
 
