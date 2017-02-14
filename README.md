@@ -1,6 +1,9 @@
 # Squirrel
 Squirrel is an interpreted programming language inspired by Lisp.
 
+Check out the [language reference](docs/language-reference.md) to learn how it
+works.
+
 ## Sample
 
 ```
