@@ -58,6 +58,10 @@ namespace Squirrel
             InitializeBuiltinFunctionDictionary();
         }
 
+        public Evaluator(INode root) : this(root, new List<string>())
+        {
+        }
+
         public INode Evaluate() => VisitNode(_root, new Environment());
 
         public INode Evaluate(ref Environment env) => VisitNode(_root, env);
