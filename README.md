@@ -26,18 +26,11 @@ works.
 Install [.NET Core](https://www.microsoft.com/net/core) 1.1 or later in order
 to build and run the project.
 
-## Building
-
-```
-git clone https://github.com/escamilla/squirrel
-cd squirrel/
-dotnet restore
-```
-
 ## Running
 
 ```
 cd src/app/
+dotnet restore
 
 # run an interactive Squirrel console
 dotnet run
@@ -53,6 +46,7 @@ dotnet run ../../modules/game-of-life.sq
 
 ```
 cd test/test-library/
+dotnet restore
 dotnet test
 ```
 
